@@ -12,75 +12,100 @@
   <title>Nona</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <style>
-    :root{--bg:#f4f1ec;--surface:#fff;--navy:#1d3557;--navy-mid:#2d5a8e;--teal:#2a9d8f;--coral:#e76f51;--amber:#e9a427;--emergency:#c0392b;--green:#27ae60;--text:#1a1718;--soft:#7a736c;--border:rgba(0,0,0,0.07);--sh-sm:0 2px 10px rgba(0,0,0,0.06);--sh-md:0 8px 32px rgba(0,0,0,0.10);--sh-lg:0 24px 64px rgba(0,0,0,0.14);--r:22px;--rsm:14px;--pill:50px;}
+    :root{--bg:#f4f1ec;--surface:#fff;--navy:#1d3557;--navy-mid:#2d5a8e;--teal:#2a9d8f;--emergency:#b91c1c;--green:#27ae60;--text:#1a1718;--soft:#7a736c;--border:rgba(0,0,0,0.07);--sh-sm:0 2px 10px rgba(0,0,0,0.06);--sh-lg:0 24px 64px rgba(0,0,0,0.14);--r:22px;--rsm:14px;--pill:50px;}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);min-height:100vh;overflow-x:hidden;color:var(--text);}
     .view{display:none;min-height:100vh;flex-direction:column;}.view.active{display:flex;}
-    .header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);color:white;padding:52px 24px 28px;position:relative;overflow:hidden;}
+
+    /* HEADER */
+    .header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);color:white;padding:52px 24px 24px;position:relative;overflow:hidden;}
     .header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.05);}
     .header::after{content:'';position:absolute;bottom:-60px;left:20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.04);}
     .header-inner{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;}
-    .header-greeting{font-size:12px;font-weight:600;opacity:0.55;margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;}
-    .header-name{font-size:28px;font-weight:700;letter-spacing:-0.5px;}
-    .header-time{font-size:13px;opacity:0.55;margin-top:6px;}
-    .header-btn{background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:white;padding:10px 16px;border-radius:var(--pill);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;margin-top:4px;}
-    .header-visual{margin-top:20px;position:relative;z-index:1;}
-    .header-tagline{font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase;margin-top:8px;text-align:center;}
-    @keyframes headerPulse{0%,100%{transform:scale(1);opacity:0.8;}50%{transform:scale(1.08);opacity:1;}}
+    .header-greeting{font-size:11px;font-weight:600;opacity:0.5;margin-bottom:4px;letter-spacing:1.2px;text-transform:uppercase;}
+    .header-name{font-size:26px;font-weight:700;letter-spacing:-0.3px;}
+    .header-time{font-size:12px;opacity:0.5;margin-top:5px;}
+    .header-btn{background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:white;padding:9px 15px;border-radius:var(--pill);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;margin-top:4px;}
+    .header-visual{margin-top:18px;position:relative;z-index:1;}
+    .header-tagline{font-size:10px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:2px;text-transform:uppercase;margin-top:8px;text-align:center;}
+    @keyframes headerPulse{0%,100%{opacity:0.7;transform:scale(1);}50%{opacity:1;transform:scale(1.06);}}
     .header-visual svg circle:nth-child(5){animation:headerPulse 3s ease-in-out infinite;}
     .lang-switcher{display:flex;gap:2px;background:rgba(0,0,0,0.2);border-radius:20px;padding:3px;position:relative;z-index:1;}
-    .lang-pill{padding:5px 10px;border-radius:16px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);cursor:pointer;border:none;background:transparent;font-family:inherit;letter-spacing:0.5px;transition:all 0.2s;}
+    .lang-pill{padding:5px 10px;border-radius:16px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);cursor:pointer;border:none;background:transparent;font-family:inherit;letter-spacing:0.5px;transition:all 0.2s;}
     .lang-pill.active{background:rgba(255,255,255,0.18);color:white;}
     .lang-pill:hover:not(.active){color:rgba(255,255,255,0.8);}
-    .main-content{flex:1;padding:20px 18px 32px;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:start;}
-    @keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
-    .big-btn{background:var(--surface);border:none;border-radius:var(--r);padding:26px 14px 22px;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;box-shadow:0 4px 16px rgba(29,53,87,0.08),0 1px 4px rgba(29,53,87,0.04);transition:transform 0.18s cubic-bezier(.34,1.56,.64,1),box-shadow 0.25s ease;text-decoration:none;position:relative;overflow:hidden;will-change:transform;animation:cardIn 0.5s ease both;}
-    .big-btn:nth-child(1){animation-delay:0.05s;}.big-btn:nth-child(2){animation-delay:0.12s;}.big-btn:nth-child(3){animation-delay:0.19s;}.big-btn:nth-child(4){animation-delay:0.26s;}.big-btn:nth-child(5){animation-delay:0.33s;}
-    .big-btn:hover{box-shadow:0 8px 28px rgba(29,53,87,0.14),0 2px 8px rgba(29,53,87,0.06);transform:translateY(-1px);}
-    .big-btn:active{transform:scale(0.94);box-shadow:0 2px 8px rgba(29,53,87,0.08);}
-    .big-btn.emergency{grid-column:span 2;background:linear-gradient(135deg,#c0392b 0%,#922b21 100%);padding:28px 24px;flex-direction:row;justify-content:flex-start;gap:20px;box-shadow:0 8px 28px rgba(192,57,43,0.38);}
-    .big-btn.emergency .btn-icon{background:rgba(255,255,255,0.18);}.big-btn.emergency .btn-label{color:white;font-size:22px;}.big-btn.emergency .btn-sub{color:rgba(255,255,255,0.72);}.big-btn.emergency .btn-text{text-align:left;}
-    .btn-icon{width:68px;height:68px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);}
+
+    /* MAIN CONTENT — layout vertical, adult */
+    .main-content{flex:1;padding:16px 18px 32px;display:flex;flex-direction:column;gap:10px;}
+    @keyframes cardIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+    .btn-row{display:flex;gap:10px;}
+    .btn-row .big-btn{flex:1;flex-direction:column;align-items:flex-start;padding:18px 16px;gap:12px;}
+    .btn-row .big-btn .btn-label{font-size:15px;}
+
+    .big-btn{background:var(--surface);border:none;border-radius:18px;display:flex;align-items:center;gap:18px;cursor:pointer;box-shadow:0 2px 14px rgba(29,53,87,0.07);transition:transform 0.15s ease,box-shadow 0.2s ease;text-decoration:none;position:relative;overflow:hidden;will-change:transform;animation:cardIn 0.4s ease both;padding:18px 20px;}
+    .big-btn:nth-child(1){animation-delay:0.04s;}.big-btn:nth-child(2){animation-delay:0.1s;}.big-btn:nth-child(3){animation-delay:0.16s;}.big-btn:nth-child(4){animation-delay:0.22s;}.big-btn:nth-child(5){animation-delay:0.28s;}
+    .big-btn:hover{box-shadow:0 6px 24px rgba(29,53,87,0.12);transform:translateY(-1px);}
+    .big-btn:active{transform:scale(0.97);box-shadow:0 1px 6px rgba(29,53,87,0.07);}
+    .big-btn.emergency{background:linear-gradient(135deg,#b91c1c 0%,#7f1d1d 100%);padding:22px 24px;box-shadow:0 6px 24px rgba(185,28,28,0.32);}
+    .big-btn.emergency .btn-icon{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);}
+    .big-btn.emergency .btn-label{color:white;font-size:20px;}.big-btn.emergency .btn-sub{color:rgba(255,255,255,0.65);}
+    .btn-icon{width:52px;height:52px;border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;transition:transform 0.2s;}
     .big-btn:active .btn-icon{transform:scale(0.88);}
-    .btn-text{display:flex;flex-direction:column;gap:3px;}
-    .btn-label{font-size:17px;font-weight:700;color:var(--text);text-align:center;line-height:1.2;}
-    .btn-sub{font-size:12px;color:var(--soft);text-align:center;font-weight:500;}
-    .big-btn.btn-location{border-top:3px solid #2563eb;}.big-btn.btn-location .btn-icon{background:#dbeafe;}
-    .big-btn.btn-medicines{border-top:3px solid #3b82f6;}.big-btn.btn-medicines .btn-icon{background:#e0f2fe;}
-    .big-btn.btn-transport{border-top:3px solid #60a5fa;}.big-btn.btn-transport .btn-icon{background:#eff6ff;}
-    .big-btn.btn-chat{border-top:3px solid #93c5fd;}.big-btn.btn-chat .btn-icon{background:#e8f0fe;}
+    .btn-text{display:flex;flex-direction:column;gap:2px;flex:1;}
+    .btn-label{font-size:17px;font-weight:700;color:var(--text);line-height:1.2;}
+    .btn-sub{font-size:12px;color:var(--soft);font-weight:500;margin-top:1px;}
+    .btn-chevron{color:rgba(29,53,87,0.18);margin-left:auto;flex-shrink:0;}
+    .big-btn.btn-location{border-left:4px solid #2563eb;background:linear-gradient(135deg,white,#f5f8ff);}
+    .big-btn.btn-location .btn-icon{background:#dbeafe;}
+    .big-btn.btn-medicines{border-left:4px solid #3b82f6;background:linear-gradient(135deg,white,#f0f7ff);}
+    .big-btn.btn-medicines .btn-icon{background:#e0f2fe;}
+    .big-btn.btn-transport{border-left:4px solid #60a5fa;background:linear-gradient(135deg,white,#eff6ff);}
+    .big-btn.btn-transport .btn-icon{background:#dbeafe;}
+    .big-btn.btn-chat{border-left:4px solid var(--navy);background:linear-gradient(135deg,white,#f0f4ff);}
+    .big-btn.btn-chat .btn-icon{background:#e8f0fe;}
+
+    /* REMINDER */
     .reminder-banner{margin:0 18px 4px;background:#eff6ff;border:1.5px solid #3b82f6;border-radius:var(--rsm);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;}
-    .reminder-banner .r-icon{font-size:22px;flex-shrink:0;}.reminder-banner .r-text{flex:1;}.reminder-banner .r-title{font-size:14px;font-weight:700;color:#1d4ed8;}.reminder-banner .r-sub{font-size:12px;color:#2563eb;margin-top:2px;}.reminder-banner .r-arrow{font-size:16px;color:#3b82f6;}
+    .reminder-banner .r-icon{font-size:22px;flex-shrink:0;}.reminder-banner .r-text{flex:1;}
+    .reminder-banner .r-title{font-size:14px;font-weight:700;color:#1d4ed8;}.reminder-banner .r-sub{font-size:12px;color:#2563eb;margin-top:2px;}
+    .reminder-banner .r-arrow{font-size:16px;color:#3b82f6;}
+
+    /* MODALS */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,20,0.55);backdrop-filter:blur(4px);z-index:100;align-items:flex-end;}.modal-overlay.open{display:flex;}
     .modal{background:var(--surface);border-radius:28px 28px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:12px 22px 44px;transform:translateY(100%);opacity:0;will-change:transform,opacity;}
     .modal-handle{width:44px;height:4px;background:#e0dbd4;border-radius:2px;margin:12px auto 20px;}
-    .modal h2{font-size:24px;font-weight:700;margin-bottom:20px;color:var(--text);letter-spacing:-0.3px;}
+    .modal h2{font-size:22px;font-weight:700;margin-bottom:20px;color:var(--text);letter-spacing:-0.3px;}
     .modal-close{float:right;background:var(--bg);border:none;border-radius:50%;width:38px;height:38px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--soft);font-family:inherit;margin-top:-4px;}
-    .action-btn{width:100%;padding:17px 20px;border:none;border-radius:var(--rsm);font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;transition:transform 0.15s,box-shadow 0.15s;}
+    .action-btn{width:100%;padding:17px 20px;border:none;border-radius:var(--rsm);font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;transition:transform 0.15s;}
     .action-btn:active{transform:scale(0.97);}
     .action-btn.primary{background:var(--navy);color:white;box-shadow:0 4px 16px rgba(29,53,87,0.25);}
     .action-btn.secondary{background:var(--bg);color:var(--text);}
-    .action-btn.danger{background:var(--emergency);color:white;box-shadow:0 4px 16px rgba(192,57,43,0.3);}
-    .action-btn.teal{background:var(--teal);color:white;box-shadow:0 4px 16px rgba(42,157,143,0.3);}
+    .action-btn.danger{background:var(--emergency);color:white;box-shadow:0 4px 16px rgba(185,28,28,0.3);}
+
+    /* MEDICINES */
     .med-list{list-style:none;margin-bottom:16px;}
     .med-item{background:var(--bg);border-radius:var(--rsm);padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;border-left:4px solid #3b82f6;}
     .med-icon{font-size:26px;}.med-info{flex:1;}.med-name{font-size:16px;font-weight:700;color:var(--text);}.med-dose{font-size:13px;color:var(--soft);margin-top:3px;}
     .med-time{font-size:12px;background:var(--navy);color:white;padding:5px 12px;border-radius:var(--pill);white-space:nowrap;font-weight:600;}
+
+    /* XAT */
     .chat-messages{min-height:200px;max-height:48vh;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;padding:4px 0;}
     .msg{max-width:88%;padding:13px 16px;border-radius:18px;font-size:16px;line-height:1.5;white-space:pre-line;}
     .msg.user{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:white;align-self:flex-end;border-bottom-right-radius:4px;}
     .msg.ai{background:var(--bg);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;border-left:3px solid var(--teal);}
-    .msg.ai.loading{opacity:0.5;font-style:italic;border-left-color:var(--border);}
+    .msg.ai.loading{opacity:0.5;font-style:italic;}
     .chat-input-row{display:flex;gap:10px;align-items:center;}
     .chat-input{flex:1;padding:15px 18px;border:2px solid var(--border);border-radius:var(--pill);font-size:16px;outline:none;background:var(--bg);font-family:inherit;color:var(--text);transition:border-color 0.2s;}
     .chat-input:focus{border-color:var(--navy);background:white;}
     .voice-btn{width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:white;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(29,53,87,0.3);}
     .voice-btn.recording{background:var(--emergency);animation:pulse 1s infinite;}
     @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
-    .emergency-box{background:linear-gradient(135deg,#fff0ee,#fde8e4);border:1.5px solid rgba(192,57,43,0.18);border-radius:var(--rsm);padding:20px;text-align:center;margin-bottom:18px;}
+
+    /* EMERGÈNCIA */
+    .emergency-box{background:linear-gradient(135deg,#fff0ee,#fde8e4);border:1.5px solid rgba(185,28,28,0.18);border-radius:var(--rsm);padding:20px;text-align:center;margin-bottom:18px;}
     .emergency-box h3{font-size:20px;color:var(--emergency);margin-bottom:6px;font-weight:700;}
     .emergency-box p{font-size:14px;color:#7a4040;}
     .contact-list{list-style:none;margin-bottom:16px;}
@@ -88,6 +113,8 @@
     .contact-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:white;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .contact-name{font-size:17px;font-weight:700;flex:1;}.contact-rel{font-size:12px;color:var(--soft);margin-top:2px;}
     .call-btn{background:var(--green);color:white;border:none;border-radius:50%;width:46px;height:46px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(39,174,96,0.35);}
+
+    /* FAMILIA */
     #familyView{background:var(--bg);}
     .family-header{background:linear-gradient(135deg,#0f1e33,var(--navy));color:white;padding:52px 22px 28px;display:flex;align-items:flex-end;justify-content:space-between;}
     .family-header h1{font-size:22px;font-weight:700;letter-spacing:-0.3px;}
@@ -107,40 +134,46 @@
     .edit-btn{background:var(--bg);border:none;border-radius:8px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit;}
     .status-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--pill);font-size:13px;font-weight:600;}
     .status-badge.ok{background:#e8f8f0;color:#1e7a47;}.status-badge.warn{background:#fffbeb;color:#b45309;}
-    .sending-overlay{display:none;position:fixed;inset:0;background:linear-gradient(135deg,#8e1b0e,var(--emergency));z-index:200;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;padding:40px;}
+
+    /* SENDING */
+    .sending-overlay{display:none;position:fixed;inset:0;background:linear-gradient(135deg,#7f1d1d,var(--emergency));z-index:200;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;padding:40px;}
     .sending-overlay.open{display:flex;}
     .sending-overlay .big-icon{font-size:80px;margin-bottom:28px;}
-    .sending-overlay h2{font-size:28px;font-weight:700;margin-bottom:12px;letter-spacing:-0.5px;}
+    .sending-overlay h2{font-size:28px;font-weight:700;margin-bottom:12px;}
     .sending-overlay p{font-size:17px;opacity:0.85;margin-bottom:36px;line-height:1.5;}
     .sending-overlay .cancel-btn{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4);color:white;padding:14px 36px;border-radius:var(--pill);font-size:16px;cursor:pointer;font-family:inherit;font-weight:600;}
+
+    /* TRANSPORT */
     .section-label{font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;}
     .transit-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}.transit-item:last-child{border-bottom:none;}
     .transit-icon{font-size:24px;}.transit-info{flex:1;}.transit-name{font-size:15px;font-weight:700;}.transit-dist{font-size:12px;color:var(--soft);margin-top:2px;}
     .transit-num{background:var(--navy);color:white;padding:5px 12px;border-radius:var(--pill);font-size:12px;font-weight:700;}
+
+    /* ONBOARDING */
     #onboardingView{background:linear-gradient(160deg,#0f1e33 0%,#1d3557 50%,#2d5a8e 100%);min-height:100vh;}
     .ob-screen{display:none;flex-direction:column;min-height:100vh;padding:56px 24px 44px;}.ob-screen.active{display:flex;}
     .ob-progress{display:flex;gap:6px;margin-bottom:40px;}
     .ob-dot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.2);transition:background 0.4s;}.ob-dot.done{background:#60a5fa;}
     .ob-icon{font-size:52px;margin-bottom:20px;text-align:center;}
-    .ob-title{font-size:32px;font-weight:700;color:white;margin-bottom:12px;line-height:1.15;letter-spacing:-0.5px;}
-    .ob-subtitle{font-size:17px;color:rgba(255,255,255,0.68);margin-bottom:36px;line-height:1.6;}
+    .ob-title{font-size:30px;font-weight:700;color:white;margin-bottom:12px;line-height:1.15;letter-spacing:-0.3px;}
+    .ob-subtitle{font-size:16px;color:rgba(255,255,255,0.65);margin-bottom:36px;line-height:1.6;}
     .ob-field{margin-bottom:16px;}
-    .ob-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block;}
+    .ob-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block;}
     .ob-input{width:100%;padding:16px 18px;border:1.5px solid rgba(255,255,255,0.2);border-radius:var(--rsm);font-size:18px;font-weight:500;background:rgba(255,255,255,0.1);color:white;outline:none;font-family:inherit;transition:border-color 0.2s,background 0.2s;}
-    .ob-input::placeholder{color:rgba(255,255,255,0.32);}.ob-input:focus{border-color:#60a5fa;background:rgba(255,255,255,0.15);}
+    .ob-input::placeholder{color:rgba(255,255,255,0.3);}.ob-input:focus{border-color:#60a5fa;background:rgba(255,255,255,0.15);}
     .ob-select{width:100%;padding:16px 18px;border:1.5px solid rgba(255,255,255,0.2);border-radius:var(--rsm);font-size:18px;background:rgba(255,255,255,0.1);color:white;outline:none;appearance:none;font-family:inherit;}
     .ob-select option{color:var(--text);background:white;}
     .ob-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
-    .ob-chip{padding:10px 18px;border-radius:var(--pill);border:1.5px solid rgba(255,255,255,0.28);background:rgba(255,255,255,0.08);color:white;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;}
+    .ob-chip{padding:10px 18px;border-radius:var(--pill);border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.08);color:white;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:inherit;}
     .ob-chip.selected{background:#2563eb;border-color:#60a5fa;}
     .ob-btn{width:100%;padding:18px 24px;border:none;border-radius:var(--rsm);font-size:18px;font-weight:700;cursor:pointer;margin-top:auto;font-family:inherit;transition:transform 0.15s,box-shadow 0.15s;}
     .ob-btn:active{transform:scale(0.97);}
     .ob-btn.primary{background:linear-gradient(135deg,#1d3557,#2563eb);color:white;box-shadow:0 8px 28px rgba(29,53,87,0.4);}
-    .ob-btn.skip{background:transparent;color:rgba(255,255,255,0.45);font-size:15px;font-weight:500;margin-top:14px;text-decoration:underline;box-shadow:none;}
-    .lang-btn{width:100%;padding:18px 24px;border:1.5px solid rgba(255,255,255,0.18);border-radius:var(--rsm);background:rgba(255,255,255,0.07);color:white;font-size:20px;font-weight:700;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:12px;font-family:inherit;transition:background 0.2s,border-color 0.2s,transform 0.15s;}
+    .ob-btn.skip{background:transparent;color:rgba(255,255,255,0.4);font-size:15px;font-weight:500;margin-top:14px;text-decoration:underline;box-shadow:none;}
+    .lang-btn{width:100%;padding:18px 24px;border:1.5px solid rgba(255,255,255,0.15);border-radius:var(--rsm);background:rgba(255,255,255,0.07);color:white;font-size:20px;font-weight:700;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:12px;font-family:inherit;transition:background 0.2s,border-color 0.2s,transform 0.15s;}
     .lang-btn:hover{background:rgba(255,255,255,0.13);border-color:#60a5fa;}.lang-btn:active{background:rgba(255,255,255,0.18);transform:scale(0.98);}
     .addr-item{background:rgba(255,255,255,0.1);border-radius:var(--rsm);padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.1);}
-    .addr-item-icon{font-size:22px;}.addr-item-info{flex:1;}.addr-item-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.5px;}.addr-item-addr{font-size:15px;color:white;margin-top:2px;}
+    .addr-item-icon{font-size:22px;}.addr-item-info{flex:1;}.addr-item-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;}.addr-item-addr{font-size:15px;color:white;margin-top:2px;}
     .addr-remove{background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:30px;height:30px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
     .ob-add-row{display:flex;gap:8px;margin-bottom:10px;}.ob-add-row .ob-input{flex:1;margin:0;font-size:15px;padding:13px 16px;}
     .ob-add-btn{background:#2563eb;color:white;border:none;border-radius:var(--rsm);font-size:22px;font-weight:700;width:52px;flex-shrink:0;cursor:pointer;}
@@ -148,15 +181,16 @@
     .ac-item{padding:14px 16px;font-size:15px;color:var(--text);border-bottom:1px solid var(--border);cursor:pointer;font-family:inherit;}.ac-item:last-child{border-bottom:none;}.ac-item:hover,.ac-item:active{background:var(--bg);}.ac-item strong{color:#2563eb;}
     .location-box{background:var(--bg);border-radius:var(--rsm);padding:20px;margin-bottom:16px;text-align:center;border:1px solid var(--border);}
     .location-box .addr{font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.4;}.location-box .coords{font-size:12px;color:var(--soft);}
-    .map-placeholder{background:linear-gradient(135deg,#e8f4f8,#d5eaf0);border-radius:var(--rsm);height:140px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--soft);margin-bottom:16px;flex-direction:column;gap:8px;}
-    .map-placeholder .map-icon{font-size:36px;}
-    ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:2px;}
+    .map-placeholder{background:linear-gradient(135deg,#e8f4f8,#d5eaf0);border-radius:var(--rsm);height:130px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--soft);margin-bottom:16px;flex-direction:column;gap:8px;}.map-placeholder .map-icon{font-size:32px;}
+    ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:2px;}
   </style>
 </head>
 <body>
+
+<!-- ONBOARDING -->
 <div id="onboardingView" class="view">
   <div class="ob-screen active" id="ob-lang" style="align-items:center;justify-content:center;text-align:center;">
-    <div style="font-size:60px;margin-bottom:20px;">🤗</div>
+    <div style="font-size:56px;margin-bottom:20px;">🤗</div>
     <div class="ob-title" style="text-align:center;">Nona</div>
     <div class="ob-subtitle" style="text-align:center;margin-bottom:40px;">Tria el teu idioma · Elige tu idioma · Choose your language</div>
     <button class="lang-btn" onclick="setLang('ca')"><span>Català</span></button>
@@ -165,25 +199,24 @@
   </div>
   <div class="ob-screen" id="ob0">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
-    <div class="ob-icon">👋</div><div class="ob-title">Hola, soc la Nona!</div>
-    <div class="ob-subtitle">Et farem unes poques preguntes per tenir la teva informació sempre a mà. Trigarem menys de 2 minuts.</div>
+    <div class="ob-icon">🤗</div><div class="ob-title">Hola, soc la Nona!</div>
+    <div class="ob-subtitle">Et faré unes poques preguntes perquè pugui ajudar-te millor. Trigarem menys de 2 minuts.</div>
     <button class="ob-btn primary" onclick="obNext(0)">Comencem →</button>
   </div>
   <div class="ob-screen" id="ob1">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
-    <div class="ob-icon">🙋</div><div class="ob-title">Com et diuen?</div><div class="ob-subtitle">Així et podrem saludar cada dia.</div>
+    <div class="ob-icon">🙋</div><div class="ob-title">Com et diuen?</div><div class="ob-subtitle">Així et podré saludar cada dia com cal.</div>
     <div class="ob-field"><label class="ob-label">Nom</label><input class="ob-input" id="ob-nom" type="text" placeholder="Maria, Joan, Rosa..."></div>
     <div class="ob-field"><label class="ob-label">Cognoms</label><input class="ob-input" id="ob-cognoms" type="text" placeholder="García López..."></div>
     <div class="ob-field">
-      <label class="ob-label">Com vols que t'anomenem? <span style="font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span></label>
+      <label class="ob-label">Com vols que t'anomeni? <span style="font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span></label>
       <input class="ob-input" id="ob-alias" type="text" placeholder="Mia, Pepe, Iaia Rosa...">
-      <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;">Si no ho poses, farem servir el teu nom.</div>
     </div>
     <button class="ob-btn primary" onclick="obNext(1)">Continuar →</button>
   </div>
   <div class="ob-screen" id="ob2">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
-    <div class="ob-icon">🏠</div><div class="ob-title">On és casa teva?</div><div class="ob-subtitle">Si mai et perds, et portarem a casa d'un clic.</div>
+    <div class="ob-icon">🏠</div><div class="ob-title">On és casa teva?</div><div class="ob-subtitle">Si et perds, et portaré a casa d'un sol toc.</div>
     <div class="ob-field"><label class="ob-label">Tipus de via i nom</label><input class="ob-input" id="ob-casa-carrer" type="text" placeholder="Carrer Gran Via, Av. Diagonal..."></div>
     <div style="display:flex;gap:10px;">
       <div class="ob-field" style="flex:1;"><label class="ob-label">Número</label><input class="ob-input" id="ob-casa-num" type="text" placeholder="123"></div>
@@ -201,7 +234,7 @@
   </div>
   <div class="ob-screen" id="ob3">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
-    <div class="ob-icon">🏥</div><div class="ob-title">La teva salut</div><div class="ob-subtitle">En cas d'emergència, aquesta informació pot ser vital.</div>
+    <div class="ob-icon">🏥</div><div class="ob-title">Metge i hospital</div><div class="ob-subtitle">Si passes malament, sabré a qui trucar i on portar-te.</div>
     <div class="ob-field" style="position:relative;"><label class="ob-label">CAP / EAP</label><input class="ob-input" id="ob-cap" type="text" placeholder="Escriu el nom del CAP..." oninput="autocomplete('cap',this.value)" autocomplete="off"><div id="ac-cap" class="ac-dropdown"></div></div>
     <div class="ob-field"><label class="ob-label">Metge/essa de capçalera</label><input class="ob-input" id="ob-metge" type="text" placeholder="Dr. Puig, Dra. Martínez..."></div>
     <div class="ob-field" style="position:relative;"><label class="ob-label">Hospital de referència</label><input class="ob-input" id="ob-hospital" type="text" placeholder="Escriu el nom de l'hospital..." oninput="autocomplete('hospital',this.value)" autocomplete="off"><div id="ac-hospital" class="ac-dropdown"></div></div>
@@ -217,11 +250,11 @@
   <div class="ob-screen" id="ob4">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div></div>
     <div class="ob-icon">📍</div><div class="ob-title">Llocs de confiança</div>
-    <div class="ob-subtitle">Afegeix les adreces on vas sovint — fill, metge, mercat, perruqueria...</div>
+    <div class="ob-subtitle">Fill, metge, mercat, perruqueria... Si t'hi perds, hi anem d'un toc.</div>
     <div id="ob-addrs-list"></div>
     <div style="margin-bottom:12px;">
       <div class="ob-add-row">
-        <select class="ob-select" id="ob-addr-icon" style="width:60px;flex-shrink:0;font-size:22px;padding:10px 8px;text-align:center;"><option>👨</option><option>👩</option><option>👶</option><option>🏥</option><option>💊</option><option>🛒</option><option>✂️</option><option>⛪</option><option>🏦</option><option>☕</option></select>
+        <select class="ob-select" id="ob-addr-icon" style="width:58px;flex-shrink:0;font-size:20px;padding:10px 8px;text-align:center;"><option>👨</option><option>👩</option><option>👶</option><option>🏥</option><option>💊</option><option>🛒</option><option>✂️</option><option>⛪</option><option>🏦</option><option>☕</option></select>
         <input class="ob-input" id="ob-addr-label" type="text" placeholder="Etiqueta (Fill Joan, Farmàcia...)">
       </div>
       <div class="ob-add-row"><input class="ob-input" id="ob-addr-addr" type="text" placeholder="Adreça completa..."><button class="ob-add-btn" onclick="addSecondaryAddr()">+</button></div>
@@ -233,18 +266,19 @@
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div></div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
       <div class="ob-icon">🎉</div>
-      <div class="ob-title" id="ob-final-title">Ja estàs a punt!</div>
-      <div class="ob-subtitle">Nona ja sap qui ets i on ets. Ara pots fer servir totes les funcions.</div>
+      <div class="ob-title" id="ob-final-title">Ja estem a punt!</div>
+      <div class="ob-subtitle">Ja sé qui ets i on ets. Aquí estic sempre que em necessitis.</div>
     </div>
     <button class="ob-btn primary" onclick="finishOnboarding()">Entrar →</button>
   </div>
 </div>
 
+<!-- VISTA PRINCIPAL -->
 <div id="elderView" class="view active">
   <div class="header">
     <div class="header-inner">
       <div>
-        <div class="header-greeting" id="headerGreeting">Benvingut/da</div>
+        <div class="header-greeting" id="headerGreeting">Bon dia</div>
         <div class="header-name" id="headerName">👋 Hola</div>
         <div class="header-time" id="headerTime"></div>
       </div>
@@ -258,50 +292,74 @@
       </div>
     </div>
     <div class="header-visual" aria-hidden="true">
-      <svg viewBox="0 0 260 56" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:260px;height:56px;display:block;margin:0 auto;">
-        <line x1="28" y1="28" x2="232" y2="28" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="4 4"/>
-        <circle cx="28" cy="28" r="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-        <text x="28" y="34" text-anchor="middle" font-size="17">🆘</text>
-        <circle cx="80" cy="28" r="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-        <text x="80" y="34" text-anchor="middle" font-size="17">📍</text>
-        <circle cx="130" cy="28" r="22" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
-        <text x="130" y="34" text-anchor="middle" font-size="17">💊</text>
-        <circle cx="180" cy="28" r="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-        <text x="180" y="34" text-anchor="middle" font-size="17">🚌</text>
-        <circle cx="232" cy="28" r="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-        <text x="232" y="34" text-anchor="middle" font-size="17">💬</text>
+      <svg viewBox="0 0 260 52" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:260px;height:52px;display:block;margin:0 auto;">
+        <line x1="28" y1="26" x2="232" y2="26" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4 4"/>
+        <circle cx="28" cy="26" r="20" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+        <text x="28" y="33" text-anchor="middle" font-size="16">🆘</text>
+        <circle cx="80" cy="26" r="20" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+        <text x="80" y="33" text-anchor="middle" font-size="16">📍</text>
+        <circle cx="130" cy="26" r="20" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+        <text x="130" y="33" text-anchor="middle" font-size="16">💊</text>
+        <circle cx="180" cy="26" r="20" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+        <text x="180" y="33" text-anchor="middle" font-size="16">🚌</text>
+        <circle cx="232" cy="26" r="20" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+        <text x="232" y="33" text-anchor="middle" font-size="16">💬</text>
       </svg>
-      <div class="header-tagline" id="headerTagline">El teu company de salut</div>
+      <div class="header-tagline" id="headerTagline">Sempre amb tu</div>
     </div>
   </div>
+
   <div id="reminderBanner" class="reminder-banner" style="display:none;" onclick="goToReminder()">
     <div class="r-icon">⚠️</div>
     <div class="r-text"><div class="r-title" id="reminderTitle"></div><div class="r-sub" id="reminderSub"></div></div>
     <div class="r-arrow">→</div>
   </div>
+
   <div class="main-content">
     <button class="big-btn emergency" onclick="openEmergency()">
       <div class="btn-icon">🆘</div>
-      <div class="btn-text"><div class="btn-label">Necessito ajuda</div><div class="btn-sub">Avisa la família ara</div></div>
+      <div class="btn-text">
+        <div class="btn-label" id="btn-el">Necessito ajuda</div>
+        <div class="btn-sub" id="btn-es">Avisa la família · 112 · 061</div>
+      </div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
     </button>
-    <button class="big-btn btn-location" onclick="openLocation()">
-      <div class="btn-icon">📍</div><div class="btn-label">On sóc?</div><div class="btn-sub">La meva ubicació</div>
-    </button>
-    <button class="big-btn btn-medicines" onclick="openMedicines()">
-      <div class="btn-icon">💊</div><div class="btn-label">Medicines</div><div class="btn-sub">Horaris d'avui</div>
-    </button>
+
+    <div class="btn-row">
+      <button class="big-btn btn-location" onclick="openLocation()">
+        <div class="btn-icon">📍</div>
+        <div class="btn-text"><div class="btn-label" id="btn-ll">On sóc?</div><div class="btn-sub" id="btn-ls">La meva ubicació</div></div>
+      </button>
+      <button class="big-btn btn-medicines" onclick="openMedicines()">
+        <div class="btn-icon">💊</div>
+        <div class="btn-text"><div class="btn-label" id="btn-ml">Medicines</div><div class="btn-sub" id="btn-ms">Horaris d'avui</div></div>
+      </button>
+    </div>
+
     <button class="big-btn btn-transport" onclick="openTransport()">
-      <div class="btn-icon">🚌</div><div class="btn-label">Transport</div><div class="btn-sub">Taxi · Bus · Metro</div>
+      <div class="btn-icon">🚌</div>
+      <div class="btn-text">
+        <div class="btn-label" id="btn-tl">Transport</div>
+        <div class="btn-sub" id="btn-ts">Taxi · Bus · Metro · Anar a casa</div>
+      </div>
+      <svg class="btn-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
     </button>
+
     <button class="big-btn btn-chat" onclick="openChat()">
-      <div class="btn-icon">💬</div><div class="btn-label">Parla amb mi</div><div class="btn-sub">Pregunta el que vulguis</div>
+      <div class="btn-icon">💬</div>
+      <div class="btn-text">
+        <div class="btn-label" id="btn-cl">Parla amb mi</div>
+        <div class="btn-sub" id="btn-cs">Sempre aquí per tu</div>
+      </div>
+      <svg class="btn-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
     </button>
   </div>
 </div>
 
+<!-- FAMILIA -->
 <div id="familyView" class="view">
   <div class="family-header">
-    <div><div class="fam-sub">PANELL FAMILIAR</div><h1>Rosa Martínez</h1></div>
+    <div><div class="fam-sub">PANELL FAMILIAR</div><h1 id="famName">Rosa Martínez</h1></div>
     <button class="header-btn" onclick="showView('elderView')" style="background:rgba(255,255,255,0.15);">← Sortir</button>
   </div>
   <div class="family-content">
@@ -310,7 +368,6 @@
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
       <span class="status-badge ok">✅ Ubicació activa</span>
       <span class="status-badge ok">✅ App oberta avui</span>
-      <span class="status-badge warn">⚠️ 1 alerta</span>
     </div>
     <div class="section-title">Contactes d'emergència</div>
     <div class="med-edit-item"><div style="font-size:24px;">👨</div><div class="med-edit-info"><div class="med-edit-name">Joan (fill)</div><div class="med-edit-detail">+34 612 345 678</div></div><button class="edit-btn">✏️ Editar</button></div>
@@ -322,26 +379,27 @@
   </div>
 </div>
 
+<!-- MODALS -->
 <div id="emergencyModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div><button class="modal-close" onclick="closeModal('emergencyModal')">✕</button>
-    <h2>🆘 Demana ajuda</h2>
-    <div class="emergency-box"><h3>Qui vols avisar?</h3><p>Premeu el nom i us trucaran de seguida</p></div>
+    <h2 id="em-title">🆘 Demana ajuda</h2>
+    <div class="emergency-box"><h3 id="em-who">Qui vols avisar?</h3><p id="em-sub">Premeu el nom i us trucaran de seguida</p></div>
     <ul class="contact-list">
       <li class="contact-item"><div class="contact-avatar">J</div><div><div class="contact-name">Joan (fill)</div><div class="contact-rel">+34 612 345 678</div></div><button class="call-btn" onclick="simulateCall('Joan')">📞</button></li>
       <li class="contact-item"><div class="contact-avatar">M</div><div><div class="contact-name">Marta (neta)</div><div class="contact-rel">+34 698 765 432</div></div><button class="call-btn" onclick="simulateCall('Marta')">📞</button></li>
     </ul>
-    <button class="action-btn danger" onclick="sendEmergencyAlert()">🆘 Avisa tothom ara</button>
-    <button class="action-btn secondary" style="background:#c0392b;color:white;" onclick="window.location.href='tel:112'">📞 Trucar al 112 — Emergències</button>
-    <button class="action-btn secondary" style="background:#d35400;color:white;" onclick="window.location.href='tel:061'">🏥 Trucar al 061 — Salut</button>
+    <button class="action-btn danger" id="em-all-btn" onclick="sendEmergencyAlert()">🆘 Avisa tothom ara</button>
+    <button class="action-btn secondary" style="background:#b91c1c;color:white;" onclick="window.location.href='tel:112'">📞 Trucar al 112 — Emergències</button>
+    <button class="action-btn secondary" style="background:#c2410c;color:white;" onclick="window.location.href='tel:061'">🏥 Trucar al 061 — Salut</button>
   </div>
 </div>
 
 <div id="locationModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div><button class="modal-close" onclick="closeModal('locationModal')">✕</button>
-    <h2>📍 On sóc?</h2>
-    <div class="map-placeholder"><div class="map-icon">🗺️</div><span>Carregant el mapa...</span></div>
+    <h2 id="loc-title">📍 On sóc?</h2>
+    <div class="map-placeholder"><div class="map-icon">🗺️</div><span>Carregant...</span></div>
     <div class="location-box"><div class="addr" id="locationAddr">Cercant la teva posició...</div><div class="coords" id="locationCoords"></div></div>
     <button class="action-btn primary" id="shareLocationBtn" onclick="shareLocation()">📤 Enviar la meva ubicació a la família</button>
     <button class="action-btn secondary" onclick="openMaps()">🗺️ Obrir Google Maps</button>
@@ -351,28 +409,28 @@
 <div id="medicinesModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div><button class="modal-close" onclick="closeModal('medicinesModal')">✕</button>
-    <h2>💊 Les meves medicines</h2>
+    <h2 id="med-title">💊 Les meves medicines</h2>
     <ul class="med-list">
       <li class="med-item"><div class="med-icon">🌅</div><div class="med-info"><div class="med-name">Omeprazol 20mg</div><div class="med-dose">1 pastilla · En dejú</div></div><div class="med-time">Matí</div></li>
       <li class="med-item"><div class="med-icon">🌅</div><div class="med-info"><div class="med-name">Metformina 500mg</div><div class="med-dose">1 pastilla · Amb esmorzar</div></div><div class="med-time">Matí</div></li>
       <li class="med-item"><div class="med-icon">🌙</div><div class="med-info"><div class="med-name">Atorvastatina 10mg</div><div class="med-dose">1 pastilla · Sopar</div></div><div class="med-time">Nit</div></li>
       <li class="med-item"><div class="med-icon">🌙</div><div class="med-info"><div class="med-name">Metformina 500mg</div><div class="med-dose">1 pastilla · Sopar</div></div><div class="med-time">Nit</div></li>
     </ul>
-    <button class="action-btn primary" onclick="closeModal('medicinesModal');openChat('medicines')">💬 Tinc un dubte sobre les medicines</button>
+    <button class="action-btn primary" onclick="closeModal('medicinesModal');openChat('medicines')">💬 Tinc un dubte</button>
   </div>
 </div>
 
 <div id="chatModal" class="modal-overlay">
   <div class="modal" style="padding-bottom:20px;">
     <div class="modal-handle"></div><button class="modal-close" onclick="closeModal('chatModal')">✕</button>
-    <h2>💬 Parla amb mi</h2>
-    <div class="chat-messages" id="chatMessages"><div class="msg ai">Hola! Sóc la Nona 👋</div></div>
+    <h2 id="chat-title">💬 Parla amb mi</h2>
+    <div class="chat-messages" id="chatMessages"><div class="msg ai">Hola! Sóc la Nona 🤗</div></div>
     <div class="chat-input-row">
       <input type="text" class="chat-input" id="chatInput" placeholder="Escriu el teu missatge..." onkeydown="if(event.key==='Enter')sendChat()">
       <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
     </div>
     <div style="text-align:center;margin-top:10px;">
-      <button class="action-btn secondary" style="display:inline-flex;width:auto;padding:10px 24px;" onclick="sendChat()">Enviar</button>
+      <button class="action-btn secondary" style="display:inline-flex;width:auto;padding:10px 24px;" onclick="sendChat()" id="chat-send-btn">Enviar</button>
     </div>
   </div>
 </div>
@@ -380,7 +438,7 @@
 <div id="transportModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div><button class="modal-close" onclick="closeModal('transportModal')">✕</button>
-    <h2>🚌 Transport</h2>
+    <h2 id="tr-title">🚌 Transport</h2>
     <div style="margin-bottom:20px;">
       <div class="section-label">Taxi</div>
       <button class="action-btn primary" style="margin-bottom:10px;" onclick="callTaxi('uber')">🚗 Demanar Uber</button>
@@ -388,7 +446,7 @@
       <button class="action-btn secondary" onclick="window.location.href='tel:933033033'">📞 Trucar taxi (Barna: 933 033 033)</button>
     </div>
     <div style="margin-bottom:20px;">
-      <div class="section-label">Transport públic proper</div>
+      <div class="section-label">Transport públic</div>
       <div id="transitResults" style="background:var(--bg);border-radius:var(--rsm);padding:16px;margin-bottom:10px;text-align:center;color:var(--soft);font-size:15px;">Prem "Buscar" per veure parades properes</div>
       <button class="action-btn secondary" onclick="findTransit()">🔍 Buscar parades ara</button>
     </div>
@@ -403,164 +461,282 @@
 <div id="sendingOverlay" class="sending-overlay">
   <div class="big-icon">🆘</div>
   <h2 id="sendingTitle">Alertant la família...</h2>
-  <p>Els teus contactes rebran una notificació ara mateix amb la teva ubicació.</p>
-  <button class="cancel-btn" onclick="closeSending()">Cancel·lar</button>
+  <p>Els teus contactes rebran ara mateix la teva ubicació.</p>
+  <button class="cancel-btn" onclick="closeSending()" id="sending-cancel">Cancel·lar</button>
 </div>
 
 <script>
-  let currentLang = localStorage.getItem('nona_lang') || 'ca';
-  const T = {
-    ca:{ob_welcome_title:'Hola, soc la Nona!',ob_welcome_sub:'Et farem unes poques preguntes per tenir la teva informació sempre a mà. Trigarem menys de 2 minuts.',ob_welcome_btn:'Comencem →',ob_name_title:'Com et diuen?',ob_name_sub:'Així et podrem saludar cada dia.',ob_name_nom:'Nom',ob_name_cognoms:'Cognoms',ob_name_alias:'Com vols que t\'anomenem?',ob_name_alias_opt:'(opcional)',ob_name_alias_hint:'Si no ho poses, farem servir el teu nom.',ob_name_btn:'Continuar →',ob_addr_title:'On és casa teva?',ob_addr_sub:'Si mai et perds, et portarem a casa d\'un clic.',ob_addr_street:'Tipus de via i nom',ob_addr_num:'Número',ob_addr_floor:'Pis / Porta',ob_addr_cp:'Codi Postal',ob_addr_city:'Municipi',ob_addr_prov:'Província',ob_addr_btn:'Continuar →',ob_addr_skip:'Ara no, ho faré més tard',ob_health_title:'La teva salut',ob_health_sub:'En cas d\'emergència, aquesta informació pot ser vital.',ob_health_cap:'CAP / EAP',ob_health_cap_ph:'Escriu el nom del CAP...',ob_health_doctor:'Metge/essa de capçalera',ob_health_doctor_ph:'Dr. Puig, Dra. Martínez...',ob_health_hospital:'Hospital de referència',ob_health_hospital_ph:'Escriu el nom de l\'hospital...',ob_health_blood:'Grup sanguini',ob_health_blood_unk:'No ho sé',ob_health_allergy:'Al·lèrgies (opcional)',ob_health_allergy_ph:'Penicil·lina, fruits secs...',ob_health_btn:'Continuar →',ob_health_skip:'Ara no',ob_places_title:'Llocs de confiança',ob_places_sub:'Afegeix les adreces on vas sovint — fill, metge, mercat, perruqueria...',ob_places_label_ph:'Etiqueta (Fill Joan, Farmàcia...)',ob_places_addr_ph:'Adreça completa...',ob_places_btn:'Continuar →',ob_places_skip:'Saltar aquest pas',ob_done_sub:'Nona ja sap qui ets i on ets. Ara pots fer servir totes les funcions.',ob_done_btn:'Entrar →',hello:'Hola',family_btn:'👨‍👩‍👧 Família',btn_emergency:'Necessito ajuda',btn_emergency_sub:'Avisa la família ara',btn_location:'On sóc?',btn_location_sub:'La meva ubicació',btn_medicines:'Medicines',btn_medicines_sub:'Horaris d\'avui',btn_transport:'Transport',btn_transport_sub:'Taxi · Bus · Metro',btn_chat:'Parla amb mi',btn_chat_sub:'Pregunta el que vulguis',em_title:'🆘 Demana ajuda',em_who:'Qui vols avisar?',em_who_sub:'Premeu el nom i us trucaran de seguida',em_all:'🆘 Avisa tothom ara',em_112:'📞 Trucar al 112 — Emergències',em_061:'🏥 Trucar al 061 — Salut',sending_title:'Alertant la família...',sending_cancel:'Cancel·lar',loc_title:'📍 On sóc?',loc_searching:'📡 Cercant la teva posició...',loc_getting:'🔍 Obtenint l\'adreça...',loc_share:'📤 Enviar la meva ubicació a la família',loc_shared:'✅ Ubicació enviada!',loc_maps:'🗺️ Obrir Google Maps',loc_denied:'🔒 Has denegat el permís de ubicació. Activa\'l a Configuració → Privacitat → Ubicació.',loc_error:'⚠️ No s\'ha pogut obtenir la ubicació. Torna-ho a provar.',med_title:'💊 Les meves medicines',med_doubt:'💬 Tinc un dubte sobre les medicines',med_morning:'Matí',med_night:'Nit',tr_title:'🚌 Transport',tr_hint:'Prem "Buscar parades ara" per veure les parades properes',chat_title:'💬 Parla amb mi',chat_ph:'Escriu el teu missatge...',chat_send:'Enviar',chat_thinking:'Pensant...',chat_greeting:(alias)=>`Hola ${alias}! 👋 Sóc la Nona, la teva assistent de salut personal. Estic aquí per ajudar-te amb qualsevol dubte — medicines, símptomes, adreces o simplement per parlar. Recorda que no substitueixo el teu metge, però sempre t'orientaré cap a la millor solució. Com et trobes avui?`,chat_r1:'T\'escolto. Explica\'m una mica més com et sents o quin és el teu dubte, i t\'ajudo. 🩺',chat_r2:'Entès. Et recomano que, si el malestar persisteix, ho comentes amb el teu metge o truca al 061. Mentre tant, puc ajudar-te a localitzar el teu CAP o hospital. Vols que ho faci?',chat_r3:'Has fet molt bé de consultar-ho. Per a qualsevol símptoma nou o que et preocupi, sempre és millor parlar-ne amb un professional. 💙',chat_med:(alias)=>`Aquí tens les teves medicines d'avui, ${alias}: 💊\n\n🌅 Matí (en dejú): Omeprazol 20mg\n🌅 Matí (amb esmorzar): Metformina 500mg\n🌙 Nit (amb sopar): Atorvastatina 10mg + Metformina 500mg\n\nSi tens dubtes o notes algun efecte inesperat, consulta-ho amb el teu metge o farmacèutic. 🩺`,voice_error:'El teu navegador no suporta la veu. Prova Chrome.',fam_panel:'PANELL FAMILIAR',fam_back:'← Sortir',fam_today:'Estat avui',fam_alerts:'Alertes recents',fam_contacts:'Contactes d\'emergència',fam_medicines:'Medicines configurades',fam_notif:'Notificacions',fam_edit:'✏️ Editar',fam_data_title:'Dades personals',fam_modify:'✏️ Modificar dades',fam_confirm_reset:'Vols tornar a configurar les dades personals?',f_name:'Nom',f_home:'Casa',f_cap:'CAP/EAP',f_doctor:'Metge/essa',f_hospital:'Hospital',f_blood:'Sang',f_allergy:'Al·lèrgies',f_places:'Llocs de confiança',days:['Diumenge','Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte'],months:['gen','feb','mar','abr','mai','jun','jul','ago','set','oct','nov','des'],speech_lang:'ca-ES',prov_opts:['Selecciona...','Barcelona','Girona','Lleida','Tarragona'],greeting:'Benvingut/da',tagline:'El teu company de salut'},
-    es:{ob_welcome_title:'¡Hola, soy Nona!',ob_welcome_sub:'Te haremos unas pocas preguntas para tener tu información siempre a mano. Tardaremos menos de 2 minutos.',ob_welcome_btn:'Empezamos →',ob_name_title:'¿Cómo te llamas?',ob_name_sub:'Así podremos saludarte cada día.',ob_name_nom:'Nombre',ob_name_cognoms:'Apellidos',ob_name_alias:'¿Cómo quieres que te llamemos?',ob_name_alias_opt:'(opcional)',ob_name_alias_hint:'Si no lo pones, usaremos tu nombre.',ob_name_btn:'Continuar →',ob_addr_title:'¿Dónde está tu casa?',ob_addr_sub:'Si alguna vez te pierdes, te llevaremos a casa con un clic.',ob_addr_street:'Tipo de vía y nombre',ob_addr_num:'Número',ob_addr_floor:'Piso / Puerta',ob_addr_cp:'Código Postal',ob_addr_city:'Municipio',ob_addr_prov:'Provincia',ob_addr_btn:'Continuar →',ob_addr_skip:'Ahora no, lo haré más tarde',ob_health_title:'Tu salud',ob_health_sub:'En caso de emergencia, esta información puede ser vital.',ob_health_cap:'CAP / EAP',ob_health_cap_ph:'Escribe el nombre del CAP...',ob_health_doctor:'Médico/a de cabecera',ob_health_doctor_ph:'Dr. García, Dra. López...',ob_health_hospital:'Hospital de referencia',ob_health_hospital_ph:'Escribe el nombre del hospital...',ob_health_blood:'Grupo sanguíneo',ob_health_blood_unk:'No lo sé',ob_health_allergy:'Alergias (opcional)',ob_health_allergy_ph:'Penicilina, frutos secos...',ob_health_btn:'Continuar →',ob_health_skip:'Ahora no',ob_places_title:'Lugares de confianza',ob_places_sub:'Añade las direcciones donde vas a menudo — hijo, médico, mercado, peluquería...',ob_places_label_ph:'Etiqueta (Hijo Joan, Farmacia...)',ob_places_addr_ph:'Dirección completa...',ob_places_btn:'Continuar →',ob_places_skip:'Saltar este paso',ob_done_sub:'Nona ya sabe quién eres y dónde estás. Ya puedes usar todas las funciones.',ob_done_btn:'Entrar →',hello:'Hola',family_btn:'👨‍👩‍👧 Familia',btn_emergency:'Necesito ayuda',btn_emergency_sub:'Avisa a la familia',btn_location:'¿Dónde estoy?',btn_location_sub:'Mi ubicación',btn_medicines:'Medicamentos',btn_medicines_sub:'Horarios de hoy',btn_transport:'Transporte',btn_transport_sub:'Taxi · Bus · Metro',btn_chat:'Habla conmigo',btn_chat_sub:'Pregunta lo que quieras',em_title:'🆘 Pide ayuda',em_who:'¿A quién quieres avisar?',em_who_sub:'Pulsa el nombre y te llamarán enseguida',em_all:'🆘 Avisar a todos ahora',em_112:'📞 Llamar al 112 — Emergencias',em_061:'🏥 Llamar al 061 — Salud',sending_title:'Avisando a la familia...',sending_cancel:'Cancelar',loc_title:'📍 ¿Dónde estoy?',loc_searching:'📡 Buscando tu posición...',loc_getting:'🔍 Obteniendo la dirección...',loc_share:'📤 Enviar mi ubicación a la familia',loc_shared:'✅ ¡Ubicación enviada!',loc_maps:'🗺️ Abrir Google Maps',loc_denied:'🔒 Has denegado el permiso de ubicación. Actívalo en Ajustes → Privacidad → Ubicación.',loc_error:'⚠️ No se ha podido obtener la ubicación. Inténtalo de nuevo.',med_title:'💊 Mis medicamentos',med_doubt:'💬 Tengo una duda sobre los medicamentos',med_morning:'Mañana',med_night:'Noche',tr_title:'🚌 Transporte',tr_hint:'Pulsa "Buscar paradas ahora" para ver las paradas cercanas',chat_title:'💬 Habla conmigo',chat_ph:'Escribe tu mensaje...',chat_send:'Enviar',chat_thinking:'Pensando...',chat_greeting:(alias)=>`¡Hola ${alias}! 👋 Soy Nona, tu asistente de salud personal. Estoy aquí para ayudarte con cualquier duda — medicamentos, síntomas, direcciones o simplemente para charlar. Recuerda que no sustituyo a tu médico, pero siempre te orientaré hacia la mejor solución. ¿Cómo te encuentras hoy?`,chat_r1:'Te escucho. Cuéntame un poco más cómo te sientes o cuál es tu duda, y te ayudo. 🩺',chat_r2:'Entendido. Te recomiendo que, si el malestar persiste, lo comentes con tu médico o llames al 061. Mientras tanto, puedo ayudarte a localizar tu centro de salud u hospital. ¿Quieres que lo haga?',chat_r3:'Has hecho muy bien en consultarlo. Para cualquier síntoma nuevo o que te preocupe, siempre es mejor hablarlo con un profesional. 💙',chat_med:(alias)=>`Aquí tienes tus medicamentos de hoy, ${alias}: 💊\n\n🌅 Mañana (en ayunas): Omeprazol 20mg\n🌅 Mañana (con desayuno): Metformina 500mg\n🌙 Noche (con cena): Atorvastatina 10mg + Metformina 500mg\n\nSi tienes dudas o notas algún efecto inesperado, consúltalo con tu médico o farmacéutico. 🩺`,voice_error:'Tu navegador no soporta la voz. Prueba con Chrome.',fam_panel:'PANEL FAMILIAR',fam_back:'← Salir',fam_today:'Estado hoy',fam_alerts:'Alertas recientes',fam_contacts:'Contactos de emergencia',fam_medicines:'Medicamentos configurados',fam_notif:'Notificaciones',fam_edit:'✏️ Editar',fam_data_title:'Datos personales',fam_modify:'✏️ Modificar datos',fam_confirm_reset:'¿Quieres volver a configurar los datos personales?',f_name:'Nombre',f_home:'Casa',f_cap:'CAP/EAP',f_doctor:'Médico/a',f_hospital:'Hospital',f_blood:'Sangre',f_allergy:'Alergias',f_places:'Lugares de confianza',days:['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],months:['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],speech_lang:'es-ES',prov_opts:['Selecciona...','Barcelona','Girona','Lleida','Tarragona'],greeting:'Bienvenido/a',tagline:'Tu compañero de salud'},
-    en:{ob_welcome_title:'Hi, I\'m Nona!',ob_welcome_sub:'We\'ll ask you a few questions to keep your info always at hand. It\'ll take less than 2 minutes.',ob_welcome_btn:'Let\'s start →',ob_name_title:'What\'s your name?',ob_name_sub:'So we can greet you every day.',ob_name_nom:'First name',ob_name_cognoms:'Last name',ob_name_alias:'What should we call you?',ob_name_alias_opt:'(optional)',ob_name_alias_hint:'If blank, we\'ll use your first name.',ob_name_btn:'Continue →',ob_addr_title:'Where is your home?',ob_addr_sub:'If you ever get lost, we\'ll take you home in one tap.',ob_addr_street:'Street name',ob_addr_num:'Number',ob_addr_floor:'Floor / Door',ob_addr_cp:'Postcode',ob_addr_city:'City',ob_addr_prov:'Province',ob_addr_btn:'Continue →',ob_addr_skip:'Skip for now',ob_health_title:'Your health',ob_health_sub:'In an emergency, this information can be vital.',ob_health_cap:'Primary care centre',ob_health_cap_ph:'Type the centre name...',ob_health_doctor:'Your GP',ob_health_doctor_ph:'Dr. Smith, Dr. Jones...',ob_health_hospital:'Reference hospital',ob_health_hospital_ph:'Type the hospital name...',ob_health_blood:'Blood type',ob_health_blood_unk:'I don\'t know',ob_health_allergy:'Allergies (optional)',ob_health_allergy_ph:'Penicillin, nuts...',ob_health_btn:'Continue →',ob_health_skip:'Skip for now',ob_places_title:'Trusted places',ob_places_sub:'Add addresses you visit often — family, doctor, market, hairdresser...',ob_places_label_ph:'Label (Son Joan, Pharmacy...)',ob_places_addr_ph:'Full address...',ob_places_btn:'Continue →',ob_places_skip:'Skip this step',ob_done_sub:'Nona knows who you are and where you are. You can now use all features.',ob_done_btn:'Enter →',hello:'Hello',family_btn:'👨‍👩‍👧 Family',btn_emergency:'I need help',btn_emergency_sub:'Alert family now',btn_location:'Where am I?',btn_location_sub:'My location',btn_medicines:'Medicines',btn_medicines_sub:'Today\'s schedule',btn_transport:'Transport',btn_transport_sub:'Taxi · Bus · Metro',btn_chat:'Talk to me',btn_chat_sub:'Ask me anything',em_title:'🆘 Ask for help',em_who:'Who do you want to alert?',em_who_sub:'Tap a name and they\'ll call you right away',em_all:'🆘 Alert everyone now',em_112:'📞 Call 112 — Emergencies',em_061:'🏥 Call 061 — Health',sending_title:'Alerting your family...',sending_cancel:'Cancel',loc_title:'📍 Where am I?',loc_searching:'📡 Finding your position...',loc_getting:'🔍 Getting address...',loc_share:'📤 Send my location to family',loc_shared:'✅ Location sent!',loc_maps:'🗺️ Open Google Maps',loc_denied:'🔒 Location permission denied. Enable it in Settings → Privacy → Location.',loc_error:'⚠️ Could not get your location. Please try again.',med_title:'💊 My medicines',med_doubt:'💬 I have a question about my medicines',med_morning:'Morning',med_night:'Night',tr_title:'🚌 Transport',tr_hint:'Tap "Find stops now" to see nearby stops',chat_title:'💬 Talk to me',chat_ph:'Type your message...',chat_send:'Send',chat_thinking:'Thinking...',chat_greeting:(alias)=>`Hi ${alias}! 👋 I'm Nona, your personal health assistant. I'm here to help with any question — medicines, symptoms, directions or just a chat. Remember I'm not a replacement for your doctor, but I'll always guide you to the right solution. How are you feeling today?`,chat_r1:'I\'m listening. Tell me a bit more about how you feel or what\'s worrying you, and I\'ll help. 🩺',chat_r2:'Understood. If the discomfort continues, I recommend speaking with your doctor or calling the emergency line. Meanwhile, I can help you find your GP or nearest hospital. Would you like me to?',chat_r3:'You did the right thing by asking. For any new or worrying symptom, it\'s always best to speak with a professional. 💙',chat_med:(alias)=>`Here are your medicines for today, ${alias}: 💊\n\n🌅 Morning (empty stomach): Omeprazole 20mg\n🌅 Morning (with breakfast): Metformin 500mg\n🌙 Night (with dinner): Atorvastatin 10mg + Metformin 500mg\n\nIf you have any questions or notice unexpected effects, please consult your doctor or pharmacist. 🩺`,voice_error:'Your browser doesn\'t support voice. Try Chrome.',fam_panel:'FAMILY PANEL',fam_back:'← Back',fam_today:'Status today',fam_alerts:'Recent alerts',fam_contacts:'Emergency contacts',fam_medicines:'Configured medicines',fam_notif:'Notifications',fam_edit:'✏️ Edit',fam_data_title:'Personal data',fam_modify:'✏️ Edit data',fam_confirm_reset:'Do you want to reconfigure personal data?',f_name:'Name',f_home:'Home',f_cap:'Primary care',f_doctor:'GP',f_hospital:'Hospital',f_blood:'Blood',f_allergy:'Allergies',f_places:'Trusted places',days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],speech_lang:'en-GB',prov_opts:['Select...','Barcelona','Girona','Lleida','Tarragona'],greeting:'Welcome back',tagline:'Your health companion'}
-  };
-  function t(key,...args){const val=T[currentLang]?.[key]??T.ca[key]??key;return typeof val==='function'?val(...args):val;}
-
-  function setLang(lang){currentLang=lang;localStorage.setItem('nona_lang',lang);document.documentElement.lang=lang;applyLang();document.getElementById('ob-lang').classList.remove('active');document.getElementById('ob0').classList.add('active');}
-
-  function switchLang(lang){
-    currentLang=lang;localStorage.setItem('nona_lang',lang);document.documentElement.lang=lang;
-    applyLang();if(userData)applyUserData();
-    ['ca','es','en'].forEach(l=>{const p=document.getElementById('pill-'+l);if(p)p.classList.toggle('active',l===lang);});
-    const tl=document.getElementById('headerTagline');
-    if(tl&&typeof gsap!=='undefined'){gsap.to(tl,{opacity:0,y:-4,duration:0.15,onComplete:()=>{tl.textContent=t('tagline');gsap.to(tl,{opacity:1,y:0,duration:0.2});}});}
-    else if(tl) tl.textContent=t('tagline');
-    if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{scale:0.94},{scale:1,duration:0.25,ease:'back.out(2)'});
+let currentLang = localStorage.getItem('nona_lang') || 'ca';
+const T = {
+  ca: {
+    ob_welcome_title:'Hola, soc la Nona!', ob_welcome_btn:'Comencem →',
+    ob_name_title:'Com et diuen?', ob_name_btn:'Continuar →',
+    ob_addr_title:'On és casa teva?', ob_addr_btn:'Continuar →', ob_addr_skip:'Ara no, ho faré més tard',
+    ob_health_title:'Metge i hospital', ob_health_btn:'Continuar →', ob_health_skip:'Ara no',
+    ob_health_cap_ph:'Escriu el nom del CAP...', ob_health_doctor_ph:'Dr. Puig, Dra. Martínez...', ob_health_hospital_ph:"Escriu el nom de l'hospital...",
+    ob_health_allergy_ph:'Penicil·lina, fruits secs...', ob_health_blood_unk:'No ho sé',
+    ob_places_title:'Llocs de confiança', ob_places_btn:'Continuar →', ob_places_skip:'Saltar aquest pas',
+    ob_places_label_ph:'Etiqueta (Fill Joan, Farmàcia...)', ob_places_addr_ph:'Adreça completa...',
+    ob_done_sub:'Ja sé qui ets i on ets. Aquí estic sempre que em necessitis.', ob_done_btn:'Entrar →',
+    hello:'Hola', greeting:'Bon dia', tagline:'Sempre amb tu',
+    family_btn:'👨‍👩‍👧 Família',
+    btn_emergency:'Necessito ajuda', btn_emergency_sub:'Avisa la família · 112 · 061',
+    btn_location:'On sóc?', btn_location_sub:'La meva ubicació',
+    btn_medicines:'Medicines', btn_medicines_sub:"Horaris d'avui",
+    btn_transport:'Transport', btn_transport_sub:'Taxi · Bus · Metro · Anar a casa',
+    btn_chat:'Parla amb mi', btn_chat_sub:'Sempre aquí per tu',
+    em_title:'🆘 Demana ajuda', em_who:'Qui vols avisar?', em_sub:'Premeu el nom i us trucaran de seguida',
+    em_all:'🆘 Avisa tothom ara', sending_title:'Alertant la família...', sending_cancel:'Cancel·lar',
+    loc_title:'📍 On sóc?', loc_searching:'📡 Cercant la teva posició...', loc_getting:"🔍 Obtenint l'adreça...",
+    loc_share:'📤 Enviar la meva ubicació a la família', loc_shared:'✅ Ubicació enviada!',
+    loc_maps:'🗺️ Obrir Google Maps',
+    loc_denied:"🔒 Has denegat el permís de ubicació. Activa'l a Configuració → Privacitat → Ubicació.",
+    loc_error:'⚠️ No s\'ha pogut obtenir la ubicació. Torna-ho a provar.',
+    med_title:'💊 Les meves medicines', chat_title:'💬 Parla amb mi',
+    chat_ph:'Escriu el teu missatge...', chat_send:'Enviar', chat_thinking:'Pensant...',
+    tr_title:'🚌 Transport', tr_hint:'Prem "Buscar parades ara" per veure les parades properes',
+    chat_greeting: (alias) => `Hola ${alias}! 😊 Sóc la Nona, la teva company de confiança. Estic aquí per ajudar-te quan et sents perduda, desorientada o simplement necessites algú. Pots preguntar-me el que vulguis — on ets, com anar a casa, les teves medicines, o simplement per xerrar.`,
+    chat_r1: "T'escolto. Digues-me més i et ajudo de seguida. 😊",
+    chat_r2: 'Entès. Puc ajudar-te a trobar on ets, com tornar a casa, a qui trucar o com arribar al metge. Vols que ho busquem junts?',
+    chat_r3: "Has fet molt bé de dir-m'ho. Estic aquí per a això exactament — per quan et sents perduda o no saps a qui acudir. 💙",
+    chat_med: (alias) => `Aquí tens les teves medicines d'avui, ${alias}: 💊\n\n🌅 Matí (en dejú): Omeprazol 20mg\n🌅 Matí (amb esmorzar): Metformina 500mg\n🌙 Nit (amb sopar): Atorvastatina 10mg + Metformina 500mg\n\nSi tens algun dubte sobre les medicines, el teu metge o farmacèutic t'ajudarà. 🩺`,
+    voice_error:'El teu navegador no suporta la veu. Prova Chrome.',
+    fam_panel:'PANELL FAMILIAR', fam_back:'← Sortir',
+    fam_data_title:'Dades personals', fam_modify:'✏️ Modificar dades',
+    fam_confirm_reset:'Vols tornar a configurar les dades personals?',
+    f_name:'Nom', f_home:'Casa', f_cap:'CAP/EAP', f_doctor:'Metge/essa',
+    f_hospital:'Hospital', f_blood:'Sang', f_allergy:"Al·lèrgies", f_places:'Llocs de confiança',
+    days:['Diumenge','Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte'],
+    months:['gen','feb','mar','abr','mai','jun','jul','ago','set','oct','nov','des'],
+    speech_lang:'ca-ES', prov_opts:['Selecciona...','Barcelona','Girona','Lleida','Tarragona'],
+  },
+  es: {
+    ob_welcome_title:'¡Hola, soy Nona!', ob_welcome_btn:'Empezamos →',
+    ob_name_title:'¿Cómo te llamas?', ob_name_btn:'Continuar →',
+    ob_addr_title:'¿Dónde está tu casa?', ob_addr_btn:'Continuar →', ob_addr_skip:'Ahora no, lo haré más tarde',
+    ob_health_title:'Médico y hospital', ob_health_btn:'Continuar →', ob_health_skip:'Ahora no',
+    ob_health_cap_ph:'Escribe el nombre del CAP...', ob_health_doctor_ph:'Dr. García, Dra. López...',
+    ob_health_hospital_ph:'Escribe el nombre del hospital...', ob_health_allergy_ph:'Penicilina, frutos secos...',
+    ob_health_blood_unk:'No lo sé',
+    ob_places_title:'Lugares de confianza', ob_places_btn:'Continuar →', ob_places_skip:'Saltar este paso',
+    ob_places_label_ph:'Etiqueta (Hijo Joan, Farmacia...)', ob_places_addr_ph:'Dirección completa...',
+    ob_done_sub:'Ya sé quién eres y dónde estás. Aquí estoy siempre que me necesites.', ob_done_btn:'Entrar →',
+    hello:'Hola', greeting:'Buenos días', tagline:'Siempre contigo',
+    family_btn:'👨‍👩‍👧 Familia',
+    btn_emergency:'Necesito ayuda', btn_emergency_sub:'Avisa a la familia · 112 · 061',
+    btn_location:'¿Dónde estoy?', btn_location_sub:'Mi ubicación',
+    btn_medicines:'Medicamentos', btn_medicines_sub:'Horarios de hoy',
+    btn_transport:'Transporte', btn_transport_sub:'Taxi · Bus · Metro · Ir a casa',
+    btn_chat:'Habla conmigo', btn_chat_sub:'Siempre aquí para ti',
+    em_title:'🆘 Pide ayuda', em_who:'¿A quién quieres avisar?', em_sub:'Pulsa el nombre y te llamarán enseguida',
+    em_all:'🆘 Avisar a todos ahora', sending_title:'Avisando a la familia...', sending_cancel:'Cancelar',
+    loc_title:'📍 ¿Dónde estoy?', loc_searching:'📡 Buscando tu posición...', loc_getting:'🔍 Obteniendo la dirección...',
+    loc_share:'📤 Enviar mi ubicación a la familia', loc_shared:'✅ ¡Ubicación enviada!',
+    loc_maps:'🗺️ Abrir Google Maps',
+    loc_denied:'🔒 Has denegado el permiso de ubicación. Actívalo en Ajustes → Privacidad → Ubicación.',
+    loc_error:'⚠️ No se ha podido obtener la ubicación. Inténtalo de nuevo.',
+    med_title:'💊 Mis medicamentos', chat_title:'💬 Habla conmigo',
+    chat_ph:'Escribe tu mensaje...', chat_send:'Enviar', chat_thinking:'Pensando...',
+    tr_title:'🚌 Transporte', tr_hint:'Pulsa "Buscar paradas ahora" para ver las paradas cercanas',
+    chat_greeting: (alias) => `¡Hola ${alias}! 😊 Soy Nona, tu compañera de confianza. Estoy aquí para ayudarte cuando te sientes perdida, desorientada o simplemente necesitas a alguien. Puedes preguntarme lo que quieras — dónde estás, cómo volver a casa, tus medicamentos, o simplemente para charlar.`,
+    chat_r1: 'Te escucho. Cuéntame más y te ayudo enseguida. 😊',
+    chat_r2: 'Entendido. Puedo ayudarte a encontrar dónde estás, cómo volver a casa, a quién llamar o cómo llegar al médico. ¿Lo buscamos juntos?',
+    chat_r3: 'Has hecho muy bien en decírmelo. Estoy aquí exactamente para esto — para cuando te sientes perdida o no sabes a quién acudir. 💙',
+    chat_med: (alias) => `Aquí tienes tus medicamentos de hoy, ${alias}: 💊\n\n🌅 Mañana (en ayunas): Omeprazol 20mg\n🌅 Mañana (con desayuno): Metformina 500mg\n🌙 Noche (con cena): Atorvastatina 10mg + Metformina 500mg\n\nSi tienes alguna duda sobre los medicamentos, tu médico o farmacéutico te ayudará. 🩺`,
+    voice_error:'Tu navegador no soporta la voz. Prueba con Chrome.',
+    fam_panel:'PANEL FAMILIAR', fam_back:'← Salir',
+    fam_data_title:'Datos personales', fam_modify:'✏️ Modificar datos',
+    fam_confirm_reset:'¿Quieres volver a configurar los datos personales?',
+    f_name:'Nombre', f_home:'Casa', f_cap:'CAP/EAP', f_doctor:'Médico/a',
+    f_hospital:'Hospital', f_blood:'Sangre', f_allergy:'Alergias', f_places:'Lugares de confianza',
+    days:['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+    months:['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],
+    speech_lang:'es-ES', prov_opts:['Selecciona...','Barcelona','Girona','Lleida','Tarragona'],
+  },
+  en: {
+    ob_welcome_title:"Hi, I'm Nona!", ob_welcome_btn:"Let's start →",
+    ob_name_title:"What's your name?", ob_name_btn:'Continue →',
+    ob_addr_title:'Where is your home?', ob_addr_btn:'Continue →', ob_addr_skip:'Skip for now',
+    ob_health_title:'Doctor & hospital', ob_health_btn:'Continue →', ob_health_skip:'Skip for now',
+    ob_health_cap_ph:'Type the centre name...', ob_health_doctor_ph:'Dr. Smith, Dr. Jones...',
+    ob_health_hospital_ph:'Type the hospital name...', ob_health_allergy_ph:'Penicillin, nuts...',
+    ob_health_blood_unk:"I don't know",
+    ob_places_title:'Trusted places', ob_places_btn:'Continue →', ob_places_skip:'Skip this step',
+    ob_places_label_ph:'Label (Son Joan, Pharmacy...)', ob_places_addr_ph:'Full address...',
+    ob_done_sub:"I know who you are and where you are. I'm here whenever you need me.", ob_done_btn:'Enter →',
+    hello:'Hello', greeting:'Good to see you', tagline:'Always with you',
+    family_btn:'👨‍👩‍👧 Family',
+    btn_emergency:'I need help', btn_emergency_sub:'Alert family · 112',
+    btn_location:'Where am I?', btn_location_sub:'My location',
+    btn_medicines:'Medicines', btn_medicines_sub:"Today's schedule",
+    btn_transport:'Transport', btn_transport_sub:'Taxi · Bus · Metro · Go home',
+    btn_chat:'Talk to me', btn_chat_sub:'Always here for you',
+    em_title:'🆘 Ask for help', em_who:'Who do you want to alert?', em_sub:"Tap a name and they'll call you",
+    em_all:'🆘 Alert everyone now', sending_title:'Alerting your family...', sending_cancel:'Cancel',
+    loc_title:'📍 Where am I?', loc_searching:'📡 Finding your position...', loc_getting:'🔍 Getting address...',
+    loc_share:'📤 Send my location to family', loc_shared:'✅ Location sent!',
+    loc_maps:'🗺️ Open Google Maps',
+    loc_denied:'🔒 Location permission denied. Enable it in Settings → Privacy → Location.',
+    loc_error:'⚠️ Could not get your location. Please try again.',
+    med_title:'💊 My medicines', chat_title:'💬 Talk to me',
+    chat_ph:'Type your message...', chat_send:'Send', chat_thinking:'Thinking...',
+    tr_title:'🚌 Transport', tr_hint:'Tap "Find stops now" to see nearby stops',
+    chat_greeting: (alias) => `Hi ${alias}! 😊 I'm Nona, your trusted companion. I'm here to help whenever you feel lost, confused or just need someone around. Ask me anything — where you are, how to get home, your medicines, or just for a chat.`,
+    chat_r1: "I'm listening. Tell me more and I'll help right away. 😊",
+    chat_r2: 'Understood. I can help you find where you are, how to get home, who to call, or how to reach your doctor. Shall we look together?',
+    chat_r3: "You did the right thing by telling me. I'm here for exactly this — for when you feel lost or don't know who to turn to. 💙",
+    chat_med: (alias) => `Here are your medicines for today, ${alias}: 💊\n\n🌅 Morning (empty stomach): Omeprazole 20mg\n🌅 Morning (with breakfast): Metformin 500mg\n🌙 Night (with dinner): Atorvastatin 10mg + Metformin 500mg\n\nIf you have any questions about your medicines, your doctor or pharmacist will help. 🩺`,
+    voice_error:"Your browser doesn't support voice. Try Chrome.",
+    fam_panel:'FAMILY PANEL', fam_back:'← Back',
+    fam_data_title:'Personal data', fam_modify:'✏️ Edit data',
+    fam_confirm_reset:'Do you want to reconfigure personal data?',
+    f_name:'Name', f_home:'Home', f_cap:'Primary care', f_doctor:'GP',
+    f_hospital:'Hospital', f_blood:'Blood', f_allergy:'Allergies', f_places:'Trusted places',
+    days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    speech_lang:'en-GB', prov_opts:['Select...','Barcelona','Girona','Lleida','Tarragona'],
   }
+};
 
-  function applyLang(){
-    const L=T[currentLang];document.title='Nona';
-    const ob0=document.getElementById('ob0');if(ob0){ob0.querySelector('.ob-title').textContent=L.ob_welcome_title;ob0.querySelector('.ob-subtitle').textContent=L.ob_welcome_sub;ob0.querySelector('.ob-btn').textContent=L.ob_welcome_btn;}
-    const ob1=document.getElementById('ob1');if(ob1){ob1.querySelector('.ob-title').textContent=L.ob_name_title;ob1.querySelector('.ob-subtitle').textContent=L.ob_name_sub;ob1.querySelector('.ob-btn.primary').textContent=L.ob_name_btn;}
-    const ob2=document.getElementById('ob2');if(ob2){ob2.querySelector('.ob-title').textContent=L.ob_addr_title;ob2.querySelector('.ob-subtitle').textContent=L.ob_addr_sub;ob2.querySelector('.ob-btn.primary').textContent=L.ob_addr_btn;ob2.querySelector('.ob-btn.skip').textContent=L.ob_addr_skip;}
-    const ob3=document.getElementById('ob3');if(ob3){ob3.querySelector('.ob-title').textContent=L.ob_health_title;ob3.querySelector('.ob-subtitle').textContent=L.ob_health_sub;ob3.querySelector('.ob-btn.primary').textContent=L.ob_health_btn;ob3.querySelector('.ob-btn.skip').textContent=L.ob_health_skip;document.getElementById('ob-cap').placeholder=L.ob_health_cap_ph;document.getElementById('ob-metge').placeholder=L.ob_health_doctor_ph;document.getElementById('ob-hospital').placeholder=L.ob_health_hospital_ph;document.getElementById('ob-alergies').placeholder=L.ob_health_allergy_ph;const unkChip=ob3.querySelector('.ob-chip:last-child');if(unkChip)unkChip.textContent=L.ob_health_blood_unk;}
-    const ob4=document.getElementById('ob4');if(ob4){ob4.querySelector('.ob-title').textContent=L.ob_places_title;ob4.querySelector('.ob-subtitle').textContent=L.ob_places_sub;ob4.querySelector('.ob-btn.primary').textContent=L.ob_places_btn;ob4.querySelector('.ob-btn.skip').textContent=L.ob_places_skip;document.getElementById('ob-addr-label').placeholder=L.ob_places_label_ph;document.getElementById('ob-addr-addr').placeholder=L.ob_places_addr_ph;}
-    const ob5=document.getElementById('ob5');if(ob5){ob5.querySelector('.ob-subtitle').textContent=L.ob_done_sub;ob5.querySelector('.ob-btn.primary').textContent=L.ob_done_btn;}
-    const btns=document.querySelectorAll('#elderView .big-btn');
-    if(btns[0]){btns[0].querySelector('.btn-label').textContent=L.btn_emergency;btns[0].querySelector('.btn-sub').textContent=L.btn_emergency_sub;}
-    if(btns[1]){btns[1].querySelector('.btn-label').textContent=L.btn_location;btns[1].querySelector('.btn-sub').textContent=L.btn_location_sub;}
-    if(btns[2]){btns[2].querySelector('.btn-label').textContent=L.btn_medicines;btns[2].querySelector('.btn-sub').textContent=L.btn_medicines_sub;}
-    if(btns[3]){btns[3].querySelector('.btn-label').textContent=L.btn_transport;btns[3].querySelector('.btn-sub').textContent=L.btn_transport_sub;}
-    if(btns[4]){btns[4].querySelector('.btn-label').textContent=L.btn_chat;btns[4].querySelector('.btn-sub').textContent=L.btn_chat_sub;}
-    const famBtn=document.querySelector('#elderView .header-btn');if(famBtn)famBtn.textContent=L.family_btn;
-    const fh=document.querySelector('#familyView .family-header div');if(fh){const sub=fh.querySelector('.fam-sub');if(sub)sub.textContent=L.fam_panel;}
-    const fb=document.querySelector('#familyView .header-btn');if(fb)fb.textContent=L.fam_back;
-    document.querySelector('#emergencyModal h2').textContent=L.em_title;
-    document.querySelector('#emergencyModal .emergency-box h3').textContent=L.em_who;
-    document.querySelector('#emergencyModal .emergency-box p').textContent=L.em_who_sub;
-    document.querySelector('#locationModal h2').textContent=L.loc_title;
-    document.getElementById('shareLocationBtn').textContent=L.loc_share;
-    document.querySelector('#locationModal .action-btn.secondary').textContent=L.loc_maps;
-    document.querySelector('#medicinesModal h2').textContent=L.med_title;
-    document.querySelector('#chatModal h2').textContent=L.chat_title;
-    document.getElementById('chatInput').placeholder=L.chat_ph;
-    document.querySelector('#chatModal .action-btn.secondary').textContent=L.chat_send;
-    document.querySelector('#transportModal h2').textContent=L.tr_title;
-    document.getElementById('sendingTitle').textContent=L.sending_title;
-    document.querySelector('#sendingOverlay .cancel-btn').textContent=L.sending_cancel;
-    if(recognition)recognition.lang=L.speech_lang;
-    ['ca','es','en'].forEach(l=>{const p=document.getElementById('pill-'+l);if(p)p.classList.toggle('active',l===currentLang);});
-    const tl=document.getElementById('headerTagline');if(tl)tl.textContent=L.tagline||'';
-    const hg=document.getElementById('headerGreeting');if(hg)hg.textContent=L.greeting||'';
-  }
+function t(key,...args){const val=T[currentLang]?.[key]??T.ca[key]??key;return typeof val==='function'?val(...args):val;}
 
-  let userData=JSON.parse(localStorage.getItem('nona_user')||'null');
-  function saveUser(){localStorage.setItem('nona_user',JSON.stringify(userData));}
-  let selectedSang='',secondaryAddrs=[];
+function setLang(lang){currentLang=lang;localStorage.setItem('nona_lang',lang);document.documentElement.lang=lang;applyLang();document.getElementById('ob-lang').classList.remove('active');document.getElementById('ob0').classList.add('active');}
 
-  const CAPS_CAT=['CAP Barceloneta','CAP Bordeta-Magòria','CAP Cappont','CAP Castelldefels','CAP Centelles','CAP Cerdanyola del Vallès','CAP Chafarinas','CAP Cornellà de Llobregat','CAP Drassanes','CAP El Carmel','CAP El Clot','CAP El Gornal','CAP El Prat de Llobregat','CAP Eixample','CAP Esplugues de Llobregat','CAP Gòtic','CAP Granollers','CAP Guinardó','CAP Horta','CAP Igualada','CAP La Barceloneta','CAP La Mina','CAP La Pau','CAP La Sagrera','CAP Les Corts','CAP Lleida Balàfia','CAP Lleida Centre','CAP Lleida Rambla Ferran','CAP Manlleu','CAP Manresa','CAP Maragall','CAP Martorell','CAP Mataró','CAP Mollet del Vallès','CAP Montcada i Reixac','CAP Montornès del Vallès','CAP Nou Barris','CAP Olot','CAP Osona','CAP Parets del Vallès','CAP Poble Sec','CAP Premià de Mar','CAP Reus','CAP Ripollet','CAP Rubí','CAP Sabadell','CAP Salt','CAP Sant Andreu','CAP Sant Antoni','CAP Sant Boi de Llobregat','CAP Sant Cugat del Vallès','CAP Sant Feliu de Guíxols','CAP Sant Joan Despí','CAP Sant Just Desvern','CAP Sant Pere Claver','CAP Santa Coloma de Gramenet','CAP Sarrià','CAP Sants','CAP Tarragona','CAP Terrassa','CAP Tortosa','CAP Trinitat Nova','CAP Trinitat Vella','CAP Vallcarca','CAP Verdaguer','CAP Vic','CAP Viladecans','CAP Vilafranca del Penedès','CAP Vilanova i la Geltrú','CAP Vila Olímpica','CAP Virrei Amat','EAP Badalona','EAP Castellbisbal','EAP Gavà','EAP Lloret de Mar','EAP Molins de Rei','EAP Montgat','EAP Sant Adrià de Besòs','EAP Tiana','EAP Vilassar de Mar'];
-  const HOSPITALS_CAT=['Hospital Clínic de Barcelona','Hospital de la Santa Creu i Sant Pau','Hospital del Mar','Hospital de Bellvitge','Hospital Germans Trias i Pujol','Hospital Universitari Vall d\'Hebron','Hospital de Sant Joan de Déu','Hospital Sagrat Cor','Hospital Quirónsalud Barcelona','Hospital de Sabadell','Hospital de Terrassa','Hospital de Mataró','Hospital de Granollers','Hospital de Cornellà','Hospital de Sant Joan Despí Moisès Broggi','Hospital de Viladecans','Hospital de l\'Esperança','Hospital Municipal de Badalona','Hospital Sant Rafael','Hospital de Palamós','Hospital Santa Caterina de Salt','Hospital de Figueres','Hospital Universitari de Girona Doctor Josep Trueta','Hospital de Vic','Hospital de Manresa','Hospital Sant Joan de Déu de Manresa','Hospital de Igualada','Hospital Universitari Joan XXIII de Tarragona','Hospital de Reus','Hospital de Tortosa Verge de la Cinta','Hospital Santa Maria de Lleida','Hospital Universitari Arnau de Vilanova de Lleida','Clínica Corachan','Clínica Teknon','Clínica Plató','Clínica Quirón'];
+function switchLang(lang){
+  currentLang=lang;localStorage.setItem('nona_lang',lang);document.documentElement.lang=lang;
+  applyLang();if(userData)applyUserData();
+  ['ca','es','en'].forEach(l=>{const p=document.getElementById('pill-'+l);if(p)p.classList.toggle('active',l===lang);});
+  const tl=document.getElementById('headerTagline');
+  if(tl&&typeof gsap!=='undefined'){gsap.to(tl,{opacity:0,y:-4,duration:0.15,onComplete:()=>{tl.textContent=t('tagline');gsap.to(tl,{opacity:1,y:0,duration:0.2});}});}
+  else if(tl) tl.textContent=t('tagline');
+  if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{scale:0.94},{scale:1,duration:0.25,ease:'back.out(2)'});
+}
 
-  let acDebounce=null;
-  function autocomplete(type,query){const inputId=type==='cap'?'ob-cap':'ob-hospital';const input=document.getElementById(inputId);const drop=document.getElementById('ac-'+type);if(!query||query.length<2){drop.classList.remove('open');return;}clearTimeout(acDebounce);acDebounce=setTimeout(()=>{const list=type==='cap'?CAPS_CAT:HOSPITALS_CAT;const q=query.toLowerCase();const matches=list.filter(s=>s.toLowerCase().includes(q)).slice(0,6);if(!matches.length){drop.classList.remove('open');return;}const rect=input.getBoundingClientRect();drop.style.top=(rect.bottom+4)+'px';drop.style.left=rect.left+'px';drop.style.width=rect.width+'px';const hl=(s)=>s.replace(new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<strong>$1</strong>');drop.innerHTML=matches.map(m=>'<div class="ac-item" onclick="selectAC(\''+type+'\',\''+m.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\'">'+hl(m)+'</div>').join('');drop.classList.add('open');},150);}
-  function selectAC(type,val){document.getElementById(type==='cap'?'ob-cap':'ob-hospital').value=val;document.getElementById('ac-'+type).classList.remove('open');}
-  document.addEventListener('click',e=>{if(!e.target.closest('.ac-dropdown')&&!e.target.closest('.ob-field'))document.querySelectorAll('.ac-dropdown').forEach(d=>d.classList.remove('open'));});
-  document.addEventListener('scroll',()=>document.querySelectorAll('.ac-dropdown.open').forEach(d=>d.classList.remove('open')),true);
+function applyLang(){
+  const L=T[currentLang];
+  // Onboarding
+  const ob0=document.getElementById('ob0');if(ob0){ob0.querySelector('.ob-title').textContent=L.ob_welcome_title;ob0.querySelector('.ob-btn').textContent=L.ob_welcome_btn;}
+  const ob1=document.getElementById('ob1');if(ob1){ob1.querySelector('.ob-title').textContent=L.ob_name_title;ob1.querySelector('.ob-btn.primary').textContent=L.ob_name_btn;}
+  const ob2=document.getElementById('ob2');if(ob2){ob2.querySelector('.ob-title').textContent=L.ob_addr_title;ob2.querySelector('.ob-btn.primary').textContent=L.ob_addr_btn;ob2.querySelector('.ob-btn.skip').textContent=L.ob_addr_skip;}
+  const ob3=document.getElementById('ob3');if(ob3){ob3.querySelector('.ob-title').textContent=L.ob_health_title;ob3.querySelector('.ob-btn.primary').textContent=L.ob_health_btn;ob3.querySelector('.ob-btn.skip').textContent=L.ob_health_skip;document.getElementById('ob-cap').placeholder=L.ob_health_cap_ph;document.getElementById('ob-metge').placeholder=L.ob_health_doctor_ph;document.getElementById('ob-hospital').placeholder=L.ob_health_hospital_ph;document.getElementById('ob-alergies').placeholder=L.ob_health_allergy_ph;const unk=ob3.querySelector('.ob-chip:last-child');if(unk)unk.textContent=L.ob_health_blood_unk;}
+  const ob4=document.getElementById('ob4');if(ob4){ob4.querySelector('.ob-title').textContent=L.ob_places_title;ob4.querySelector('.ob-btn.primary').textContent=L.ob_places_btn;ob4.querySelector('.ob-btn.skip').textContent=L.ob_places_skip;document.getElementById('ob-addr-label').placeholder=L.ob_places_label_ph;document.getElementById('ob-addr-addr').placeholder=L.ob_places_addr_ph;}
+  const ob5=document.getElementById('ob5');if(ob5){ob5.querySelector('.ob-subtitle').textContent=L.ob_done_sub;ob5.querySelector('.ob-btn.primary').textContent=L.ob_done_btn;}
+  // App
+  const hg=document.getElementById('headerGreeting');if(hg)hg.textContent=L.greeting;
+  const fb=document.getElementById('famBtn');if(fb)fb.textContent=L.family_btn;
+  const bel=document.getElementById('btn-el');if(bel)bel.textContent=L.btn_emergency;
+  const bes=document.getElementById('btn-es');if(bes)bes.textContent=L.btn_emergency_sub;
+  const bll=document.getElementById('btn-ll');if(bll)bll.textContent=L.btn_location;
+  const bls=document.getElementById('btn-ls');if(bls)bls.textContent=L.btn_location_sub;
+  const bml=document.getElementById('btn-ml');if(bml)bml.textContent=L.btn_medicines;
+  const bms=document.getElementById('btn-ms');if(bms)bms.textContent=L.btn_medicines_sub;
+  const btl=document.getElementById('btn-tl');if(btl)btl.textContent=L.btn_transport;
+  const bts=document.getElementById('btn-ts');if(bts)bts.textContent=L.btn_transport_sub;
+  const bcl=document.getElementById('btn-cl');if(bcl)bcl.textContent=L.btn_chat;
+  const bcs=document.getElementById('btn-cs');if(bcs)bcs.textContent=L.btn_chat_sub;
+  // Modals
+  const emt=document.getElementById('em-title');if(emt)emt.textContent=L.em_title;
+  const emw=document.getElementById('em-who');if(emw)emw.textContent=L.em_who;
+  const emb=document.getElementById('em-sub');if(emb)emb.textContent=L.em_sub;
+  const ema=document.getElementById('em-all-btn');if(ema)ema.textContent=L.em_all;
+  const lt=document.getElementById('loc-title');if(lt)lt.textContent=L.loc_title;
+  const slb=document.getElementById('shareLocationBtn');if(slb)slb.textContent=L.loc_share;
+  const mt=document.getElementById('med-title');if(mt)mt.textContent=L.med_title;
+  const ct=document.getElementById('chat-title');if(ct)ct.textContent=L.chat_title;
+  const ci=document.getElementById('chatInput');if(ci)ci.placeholder=L.chat_ph;
+  const csb=document.getElementById('chat-send-btn');if(csb)csb.textContent=L.chat_send;
+  const trt=document.getElementById('tr-title');if(trt)trt.textContent=L.tr_title;
+  const stt=document.getElementById('sendingTitle');if(stt)stt.textContent=L.sending_title;
+  const scc=document.getElementById('sending-cancel');if(scc)scc.textContent=L.sending_cancel;
+  const tl=document.getElementById('headerTagline');if(tl)tl.textContent=L.tagline;
+  if(recognition)recognition.lang=L.speech_lang;
+  ['ca','es','en'].forEach(l=>{const p=document.getElementById('pill-'+l);if(p)p.classList.toggle('active',l===currentLang);});
+  const fhsub=document.querySelector('#familyView .fam-sub');if(fhsub)fhsub.textContent=L.fam_panel;
+  const fhback=document.querySelector('#familyView .header-btn');if(fhback)fhback.textContent=L.fam_back;
+}
 
-  function selectChip(group,el,val){document.querySelectorAll('#ob-chips-'+group+' .ob-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');if(group==='sang')selectedSang=val;}
-  function addSecondaryAddr(){const icon=document.getElementById('ob-addr-icon').value;const label=document.getElementById('ob-addr-label').value.trim();const addr=document.getElementById('ob-addr-addr').value.trim();if(!label||!addr)return;secondaryAddrs.push({icon,label,addr});document.getElementById('ob-addr-label').value='';document.getElementById('ob-addr-addr').value='';renderSecondaryAddrs();}
-  function removeAddr(idx){secondaryAddrs.splice(idx,1);renderSecondaryAddrs();}
-  function renderSecondaryAddrs(){document.getElementById('ob-addrs-list').innerHTML=secondaryAddrs.map((a,i)=>'<div class="addr-item"><div class="addr-item-icon">'+a.icon+'</div><div class="addr-item-info"><div class="addr-item-label">'+a.label+'</div><div class="addr-item-addr">'+a.addr+'</div></div><button class="addr-remove" onclick="removeAddr('+i+')">✕</button></div>').join('');}
+let userData=JSON.parse(localStorage.getItem('nona_user')||'null');
+function saveUser(){localStorage.setItem('nona_user',JSON.stringify(userData));}
+let selectedSang='',secondaryAddrs=[];
 
-  function obNext(step){
-    if(step===1){const nom=document.getElementById('ob-nom').value.trim();const cog=document.getElementById('ob-cognoms').value.trim();if(!nom){document.getElementById('ob-nom').style.borderColor='rgba(255,100,100,0.9)';document.getElementById('ob-nom').placeholder='⚠️ Obligatori';document.getElementById('ob-nom').focus();return;}if(!cog){document.getElementById('ob-cognoms').style.borderColor='rgba(255,100,100,0.9)';document.getElementById('ob-cognoms').placeholder='⚠️ Obligatori';document.getElementById('ob-cognoms').focus();return;}document.getElementById('ob-nom').style.borderColor='';document.getElementById('ob-cognoms').style.borderColor='';userData=userData||{};const alias=document.getElementById('ob-alias').value.trim();userData.nom=nom;userData.cognoms=cog;userData.nomComplet=[nom,cog].filter(Boolean).join(' ');userData.alias=alias||nom;}
-    if(step===2){const carrer=document.getElementById('ob-casa-carrer').value.trim();const num=document.getElementById('ob-casa-num').value.trim();const pis=document.getElementById('ob-casa-pis').value.trim();const cp=document.getElementById('ob-casa-cp').value.trim();const muni=document.getElementById('ob-casa-muni').value.trim();const prov=document.getElementById('ob-casa-prov').value.trim();const parts=[carrer,num,pis,cp,muni,prov].filter(Boolean);userData.casaComponents={carrer,num,pis,cp,muni,prov};userData.casa=parts.filter(p=>p!==pis).join(', ');userData.casaDisplay=parts.join(', ');}
-    if(step===3){userData.cap=document.getElementById('ob-cap').value.trim();userData.metge=document.getElementById('ob-metge').value.trim();userData.hospital=document.getElementById('ob-hospital').value.trim();userData.sang=selectedSang;userData.alergies=document.getElementById('ob-alergies').value.trim();}
-    if(step===4){userData.addrsSecundaries=[...secondaryAddrs];}
-    const next=step+1;
-    document.getElementById('ob'+step).classList.remove('active');
-    document.getElementById('ob'+next).classList.add('active');
-    if(next===5){const alias=userData?.alias||userData?.nom||'amic';document.getElementById('ob-final-title').textContent=t('ob_done_btn').replace('→','').trim()+', '+alias+'!';}
-  }
+const CAPS_CAT=['CAP Barceloneta','CAP Bordeta-Magòria','CAP Cappont','CAP Castelldefels','CAP Centelles','CAP Cerdanyola del Vallès','CAP Chafarinas','CAP Cornellà de Llobregat','CAP Drassanes','CAP El Carmel','CAP El Clot','CAP El Gornal','CAP El Prat de Llobregat','CAP Eixample','CAP Esplugues de Llobregat','CAP Gòtic','CAP Granollers','CAP Guinardó','CAP Horta','CAP Igualada','CAP La Barceloneta','CAP La Mina','CAP La Pau','CAP La Sagrera','CAP Les Corts','CAP Lleida Balàfia','CAP Lleida Centre','CAP Lleida Rambla Ferran','CAP Manlleu','CAP Manresa','CAP Maragall','CAP Martorell','CAP Mataró','CAP Mollet del Vallès','CAP Montcada i Reixac','CAP Montornès del Vallès','CAP Nou Barris','CAP Olot','CAP Osona','CAP Parets del Vallès','CAP Poble Sec','CAP Premià de Mar','CAP Reus','CAP Ripollet','CAP Rubí','CAP Sabadell','CAP Salt','CAP Sant Andreu','CAP Sant Antoni','CAP Sant Boi de Llobregat','CAP Sant Cugat del Vallès','CAP Sant Feliu de Guíxols','CAP Sant Joan Despí','CAP Sant Just Desvern','CAP Sant Pere Claver','CAP Santa Coloma de Gramenet','CAP Sarrià','CAP Sants','CAP Tarragona','CAP Terrassa','CAP Tortosa','CAP Trinitat Nova','CAP Trinitat Vella','CAP Vallcarca','CAP Verdaguer','CAP Vic','CAP Viladecans','CAP Vilafranca del Penedès','CAP Vilanova i la Geltrú','CAP Vila Olímpica','CAP Virrei Amat','EAP Badalona','EAP Castellbisbal','EAP Gavà','EAP Lloret de Mar','EAP Molins de Rei','EAP Montgat','EAP Sant Adrià de Besòs','EAP Tiana','EAP Vilassar de Mar'];
+const HOSPITALS_CAT=['Hospital Clínic de Barcelona','Hospital de la Santa Creu i Sant Pau','Hospital del Mar','Hospital de Bellvitge','Hospital Germans Trias i Pujol','Hospital Universitari Vall d\'Hebron','Hospital de Sant Joan de Déu','Hospital Sagrat Cor','Hospital Quirónsalud Barcelona','Hospital de Sabadell','Hospital de Terrassa','Hospital de Mataró','Hospital de Granollers','Hospital de Cornellà','Hospital de Sant Joan Despí Moisès Broggi','Hospital de Viladecans','Hospital de l\'Esperança','Hospital Municipal de Badalona','Hospital Sant Rafael','Hospital de Palamós','Hospital Santa Caterina de Salt','Hospital de Figueres','Hospital Universitari de Girona Doctor Josep Trueta','Hospital de Vic','Hospital de Manresa','Hospital de Igualada','Hospital Universitari Joan XXIII de Tarragona','Hospital de Reus','Hospital de Tortosa Verge de la Cinta','Hospital Santa Maria de Lleida','Hospital Universitari Arnau de Vilanova de Lleida','Clínica Corachan','Clínica Teknon','Clínica Plató','Clínica Quirón'];
 
-  function finishOnboarding(){userData=userData||{nom:'Amic',cognoms:'',nomComplet:'Amic'};userData.onboardingDone=true;delete userData._editingFromReminder;saveUser();applyUserData();showView('elderView');checkReminders();startReminderCycle();setTimeout(()=>{if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.4,ease:'back.out(1.5)',delay:0.5});},100);}
+let acDebounce=null;
+function autocomplete(type,query){const inputId=type==='cap'?'ob-cap':'ob-hospital';const input=document.getElementById(inputId);const drop=document.getElementById('ac-'+type);if(!query||query.length<2){drop.classList.remove('open');return;}clearTimeout(acDebounce);acDebounce=setTimeout(()=>{const list=type==='cap'?CAPS_CAT:HOSPITALS_CAT;const q=query.toLowerCase();const matches=list.filter(s=>s.toLowerCase().includes(q)).slice(0,6);if(!matches.length){drop.classList.remove('open');return;}const rect=input.getBoundingClientRect();drop.style.top=(rect.bottom+4)+'px';drop.style.left=rect.left+'px';drop.style.width=rect.width+'px';const hl=(s)=>s.replace(new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<strong>$1</strong>');drop.innerHTML=matches.map(m=>'<div class="ac-item" onclick="selectAC(\''+type+'\',\''+m.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\'">'+hl(m)+'</div>').join('');drop.classList.add('open');},150);}
+function selectAC(type,val){document.getElementById(type==='cap'?'ob-cap':'ob-hospital').value=val;document.getElementById('ac-'+type).classList.remove('open');}
+document.addEventListener('click',e=>{if(!e.target.closest('.ac-dropdown')&&!e.target.closest('.ob-field'))document.querySelectorAll('.ac-dropdown').forEach(d=>d.classList.remove('open'));});
+document.addEventListener('scroll',()=>document.querySelectorAll('.ac-dropdown.open').forEach(d=>d.classList.remove('open')),true);
 
-  function applyUserData(){if(!userData)return;const alias=userData.alias||userData.nom||'';const hName=document.getElementById('headerName');if(hName)hName.textContent='👋 '+t('hello')+', '+alias;const hGreet=document.getElementById('headerGreeting');if(hGreet)hGreet.textContent=t('greeting');const familyName=document.querySelector('#familyView .family-header h1');if(familyName)familyName.textContent=userData.nomComplet||alias;const firstMsg=document.querySelector('#chatMessages .msg.ai');if(firstMsg)firstMsg.textContent=t('chat_greeting',alias);const ud=document.getElementById('family-userdata');if(ud){const addrsHtml=(userData.addrsSecundaries||[]).map(a=>'<div style="margin-top:6px;">'+a.icon+' <b>'+a.label+'</b>: '+a.addr+'</div>').join('');ud.innerHTML='<div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">'+t('fam_data_title')+'</div><div style="font-size:15px;line-height:1.8;"><b>'+t('f_name')+':</b> '+(userData.nomComplet||'-')+(userData.alias&&userData.alias!==userData.nom?' <span style="color:#2563eb;">('+userData.alias+')</span>':'')+'<br><b>'+t('f_home')+':</b> '+(userData.casaDisplay||userData.casa||'-')+'<br><b>'+t('f_cap')+':</b> '+(userData.cap||'-')+'<br><b>'+t('f_doctor')+':</b> '+(userData.metge||'-')+'<br><b>'+t('f_hospital')+':</b> '+(userData.hospital||'-')+'<br><b>'+t('f_blood')+':</b> '+(userData.sang||'-')+'&nbsp;<b>'+t('f_allergy')+':</b> '+(userData.alergies||'-')+(addrsHtml?'<br><b>'+t('f_places')+':</b>'+addrsHtml:'')+'</div><button onclick="resetOnboarding()" style="margin-top:12px;background:#eff6ff;border:none;border-radius:10px;padding:8px 16px;font-size:13px;cursor:pointer;color:#1d4ed8;font-weight:600;">'+t('fam_modify')+'</button>';}}
+function selectChip(group,el,val){document.querySelectorAll('#ob-chips-'+group+' .ob-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');if(group==='sang')selectedSang=val;}
+function addSecondaryAddr(){const icon=document.getElementById('ob-addr-icon').value;const label=document.getElementById('ob-addr-label').value.trim();const addr=document.getElementById('ob-addr-addr').value.trim();if(!label||!addr)return;secondaryAddrs.push({icon,label,addr});document.getElementById('ob-addr-label').value='';document.getElementById('ob-addr-addr').value='';renderSecondaryAddrs();}
+function removeAddr(idx){secondaryAddrs.splice(idx,1);renderSecondaryAddrs();}
+function renderSecondaryAddrs(){document.getElementById('ob-addrs-list').innerHTML=secondaryAddrs.map((a,i)=>'<div class="addr-item"><div class="addr-item-icon">'+a.icon+'</div><div class="addr-item-info"><div class="addr-item-label">'+a.label+'</div><div class="addr-item-addr">'+a.addr+'</div></div><button class="addr-remove" onclick="removeAddr('+i+')">✕</button></div>').join('');}
 
-  const REMINDER_FIELDS=[{key:'casa',ob:2,icon:'🏠',ca:['Afegeix la teva adreça de casa','Si et perds, et portarem a casa.'],es:['Añade tu dirección de casa','Si te pierdes, te llevaremos a casa.'],en:['Add your home address','If you get lost, we\'ll take you home.']},{key:'cap',ob:3,icon:'🏥',ca:['Afegeix el teu CAP','Important per si cal demanar cita.'],es:['Añade tu CAP','Importante para pedir cita médica.'],en:['Add your GP centre','Important for booking appointments.']},{key:'hospital',ob:3,icon:'🏥',ca:['Afegeix l\'hospital de referència','Vital en cas d\'urgència.'],es:['Añade el hospital de referencia','Vital en caso de urgencia.'],en:['Add your reference hospital','Vital in case of emergency.']},{key:'sang',ob:3,icon:'🩸',ca:['Afegeix el teu grup sanguini','Informació clau per al 112.'],es:['Añade tu grupo sanguíneo','Información clave para el 112.'],en:['Add your blood type','Key info for emergency services.']},{key:'metge',ob:3,icon:'👨‍⚕️',ca:['Afegeix el teu metge de capçalera','Per saber a qui trucar.'],es:['Añade tu médico de cabecera','Para saber a quién llamar.'],en:['Add your GP doctor','So we know who to call.']}];
-  let currentReminder=0;
-  function checkReminders(){if(!userData)return;const missing=REMINDER_FIELDS.filter(f=>!userData[f.key]);const banner=document.getElementById('reminderBanner');if(!missing.length){banner.style.display='none';return;}const r=missing[currentReminder%missing.length];const texts=r[currentLang]||r.ca;document.getElementById('reminderTitle').textContent=r.icon+' '+texts[0];document.getElementById('reminderSub').textContent=texts[1];banner.style.display='flex';banner._reminderOb=r.ob;}
-  let reminderInterval=null;
-  function startReminderCycle(){clearInterval(reminderInterval);reminderInterval=setInterval(()=>{if(!userData)return;const missing=REMINDER_FIELDS.filter(f=>!userData[f.key]);if(!missing.length){document.getElementById('reminderBanner').style.display='none';clearInterval(reminderInterval);return;}currentReminder++;checkReminders();},8000);}
-  function goToReminder(){const banner=document.getElementById('reminderBanner');const ob=banner._reminderOb||2;document.querySelectorAll('.ob-screen').forEach(s=>s.classList.remove('active'));document.getElementById('ob'+ob).classList.add('active');userData._editingFromReminder=true;showView('onboardingView');}
-  function resetOnboarding(){if(confirm(t('fam_confirm_reset'))){localStorage.removeItem('nona_user');userData=null;secondaryAddrs=[];selectedSang='';['ob-nom','ob-cognoms','ob-cap','ob-hospital','ob-alergies'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('.ob-chip').forEach(c=>c.classList.remove('selected'));document.getElementById('ob-addrs-list').innerHTML='';document.querySelectorAll('.ob-screen').forEach(s=>s.classList.remove('active'));document.getElementById('ob0').classList.add('active');showView('onboardingView');}}
+function obNext(step){
+  if(step===1){const nom=document.getElementById('ob-nom').value.trim();const cog=document.getElementById('ob-cognoms').value.trim();if(!nom){document.getElementById('ob-nom').style.borderColor='rgba(255,100,100,0.8)';document.getElementById('ob-nom').focus();return;}if(!cog){document.getElementById('ob-cognoms').style.borderColor='rgba(255,100,100,0.8)';document.getElementById('ob-cognoms').focus();return;}document.getElementById('ob-nom').style.borderColor='';document.getElementById('ob-cognoms').style.borderColor='';userData=userData||{};const alias=document.getElementById('ob-alias').value.trim();userData.nom=nom;userData.cognoms=cog;userData.nomComplet=[nom,cog].filter(Boolean).join(' ');userData.alias=alias||nom;}
+  if(step===2){const carrer=document.getElementById('ob-casa-carrer').value.trim();const num=document.getElementById('ob-casa-num').value.trim();const pis=document.getElementById('ob-casa-pis').value.trim();const cp=document.getElementById('ob-casa-cp').value.trim();const muni=document.getElementById('ob-casa-muni').value.trim();const prov=document.getElementById('ob-casa-prov').value.trim();const parts=[carrer,num,pis,cp,muni,prov].filter(Boolean);userData.casaComponents={carrer,num,pis,cp,muni,prov};userData.casa=parts.filter(p=>p!==pis).join(', ');userData.casaDisplay=parts.join(', ');}
+  if(step===3){userData.cap=document.getElementById('ob-cap').value.trim();userData.metge=document.getElementById('ob-metge').value.trim();userData.hospital=document.getElementById('ob-hospital').value.trim();userData.sang=selectedSang;userData.alergies=document.getElementById('ob-alergies').value.trim();}
+  if(step===4){userData.addrsSecundaries=[...secondaryAddrs];}
+  const next=step+1;
+  document.getElementById('ob'+step).classList.remove('active');
+  document.getElementById('ob'+next).classList.add('active');
+  if(next===5){const alias=userData?.alias||userData?.nom||'';document.getElementById('ob-final-title').textContent='Ja estem a punt, '+alias+'!';}
+}
 
-  function init(){
-    applyLang();
-    if(userData&&userData.onboardingDone){applyUserData();showView('elderView');checkReminders();startReminderCycle();setTimeout(()=>{if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.4,ease:'back.out(1.5)',delay:0.3});},100);}
-    else{showView('onboardingView');if(localStorage.getItem('nona_lang')){document.getElementById('ob-lang').classList.remove('active');document.getElementById('ob0').classList.add('active');}}
-  }
+function finishOnboarding(){userData=userData||{nom:'Amic',cognoms:'',nomComplet:'Amic'};userData.onboardingDone=true;delete userData._editingFromReminder;saveUser();applyUserData();showView('elderView');checkReminders();startReminderCycle();setTimeout(()=>{if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.4,ease:'back.out(1.5)',delay:0.5});},100);}
 
-  function updateTime(){const now=new Date();const L=T[currentLang];document.getElementById('headerTime').textContent=L.days[now.getDay()]+', '+now.getDate()+' '+L.months[now.getMonth()]+' · '+now.toLocaleTimeString(currentLang,{hour:'2-digit',minute:'2-digit'});}
-  updateTime();setInterval(updateTime,30000);
+function applyUserData(){if(!userData)return;const alias=userData.alias||userData.nom||'';const hName=document.getElementById('headerName');if(hName)hName.textContent='👋 '+t('hello')+', '+alias;const fn=document.getElementById('famName');if(fn)fn.textContent=userData.nomComplet||alias;const firstMsg=document.querySelector('#chatMessages .msg.ai');if(firstMsg)firstMsg.textContent=t('chat_greeting',alias);const ud=document.getElementById('family-userdata');if(ud){const addrsHtml=(userData.addrsSecundaries||[]).map(a=>'<div style="margin-top:5px;">'+a.icon+' <b>'+a.label+'</b>: '+a.addr+'</div>').join('');ud.innerHTML='<div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">'+t('fam_data_title')+'</div><div style="font-size:14px;line-height:1.8;"><b>'+t('f_name')+':</b> '+(userData.nomComplet||'-')+(userData.alias&&userData.alias!==userData.nom?' <span style="color:#2563eb;">('+userData.alias+')</span>':'')+'<br><b>'+t('f_home')+':</b> '+(userData.casaDisplay||userData.casa||'-')+'<br><b>'+t('f_cap')+':</b> '+(userData.cap||'-')+'<br><b>'+t('f_doctor')+':</b> '+(userData.metge||'-')+'<br><b>'+t('f_hospital')+':</b> '+(userData.hospital||'-')+'<br><b>'+t('f_blood')+':</b> '+(userData.sang||'-')+'&nbsp;<b>'+t('f_allergy')+':</b> '+(userData.alergies||'-')+(addrsHtml?'<br><b>'+t('f_places')+':</b>'+addrsHtml:'')+'</div><button onclick="resetOnboarding()" style="margin-top:12px;background:#eff6ff;border:none;border-radius:10px;padding:8px 16px;font-size:13px;cursor:pointer;color:#1d4ed8;font-weight:600;">'+t('fam_modify')+'</button>';}}
 
-  // ── DRILL TRANSITION (GSAP) entre vistes ──
-  function showView(id){
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo(0,0);
-    if(id==='elderView'&&typeof gsap!=='undefined'){
-      gsap.fromTo('#elderView .big-btn',{y:28,opacity:0,scale:0.96},{y:0,opacity:1,scale:1,duration:0.42,ease:'power3.out',stagger:0.055,delay:0.04});
-      gsap.fromTo('#elderView .header-inner > div',{y:-10,opacity:0},{y:0,opacity:1,duration:0.35,ease:'power2.out'});
-    }
-    if(id==='familyView'&&typeof gsap!=='undefined'){gsap.fromTo('#familyView .med-edit-item, #familyView .config-row',{y:20,opacity:0},{y:0,opacity:1,duration:0.35,ease:'power2.out',stagger:0.04,delay:0.05});}
-  }
+const REMINDER_FIELDS=[{key:'casa',ob:2,icon:'🏠',ca:['Afegeix la teva adreça de casa','Si et perds, et portaré a casa.'],es:['Añade tu dirección de casa','Si te pierdes, te llevaré a casa.'],en:['Add your home address',"If you get lost, I'll take you home."]},{key:'cap',ob:3,icon:'🏥',ca:['Afegeix el teu CAP','Per saber a qui trucar.'],es:['Añade tu CAP','Para saber a quién llamar.'],en:['Add your GP centre','So I know who to call.']},{key:'hospital',ob:3,icon:'🏥',ca:["Afegeix l'hospital de referència","Per si cal anar-hi d'urgència."],es:['Añade el hospital de referencia','Por si hay que ir urgente.'],en:['Add your reference hospital','In case of emergency.']},{key:'sang',ob:3,icon:'🩸',ca:['Afegeix el teu grup sanguini','Informació vital per al 112.'],es:['Añade tu grupo sanguíneo','Información vital para el 112.'],en:['Add your blood type','Vital info for emergency services.']},{key:'metge',ob:3,icon:'👨‍⚕️',ca:['Afegeix el teu metge de capçalera','Per saber a qui trucar.'],es:['Añade tu médico de cabecera','Para saber a quién llamar.'],en:['Add your GP doctor','So I know who to contact.']}];
+let currentReminder=0;
+function checkReminders(){if(!userData)return;const missing=REMINDER_FIELDS.filter(f=>!userData[f.key]);const banner=document.getElementById('reminderBanner');if(!missing.length){banner.style.display='none';return;}const r=missing[currentReminder%missing.length];const texts=r[currentLang]||r.ca;document.getElementById('reminderTitle').textContent=r.icon+' '+texts[0];document.getElementById('reminderSub').textContent=texts[1];banner.style.display='flex';banner._reminderOb=r.ob;}
+let reminderInterval=null;
+function startReminderCycle(){clearInterval(reminderInterval);reminderInterval=setInterval(()=>{if(!userData)return;const missing=REMINDER_FIELDS.filter(f=>!userData[f.key]);if(!missing.length){document.getElementById('reminderBanner').style.display='none';clearInterval(reminderInterval);return;}currentReminder++;checkReminders();},8000);}
+function goToReminder(){const banner=document.getElementById('reminderBanner');const ob=banner._reminderOb||2;document.querySelectorAll('.ob-screen').forEach(s=>s.classList.remove('active'));document.getElementById('ob'+ob).classList.add('active');userData._editingFromReminder=true;showView('onboardingView');}
+function resetOnboarding(){if(confirm(t('fam_confirm_reset'))){localStorage.removeItem('nona_user');userData=null;secondaryAddrs=[];selectedSang='';['ob-nom','ob-cognoms','ob-cap','ob-hospital','ob-alergies'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('.ob-chip').forEach(c=>c.classList.remove('selected'));document.getElementById('ob-addrs-list').innerHTML='';document.querySelectorAll('.ob-screen').forEach(s=>s.classList.remove('active'));document.getElementById('ob0').classList.add('active');showView('onboardingView');}}
 
-  // ── CONTEXT TRANSITION (GSAP) per a modals ──
-  function openModal(id){const overlay=document.getElementById(id);overlay.classList.add('open');const modal=overlay.querySelector('.modal');if(typeof gsap!=='undefined')gsap.fromTo(modal,{y:'100%',opacity:0},{y:'0%',opacity:1,duration:0.38,ease:'power3.out'});else{modal.style.transform='translateY(0)';modal.style.opacity='1';}}
-  function closeModal(id){const overlay=document.getElementById(id);const modal=overlay.querySelector('.modal');if(typeof gsap!=='undefined')gsap.to(modal,{y:'100%',opacity:0,duration:0.26,ease:'power2.in',onComplete:()=>overlay.classList.remove('open')});else overlay.classList.remove('open');}
-  document.querySelectorAll('.modal-overlay').forEach(overlay=>{overlay.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);});});
+function init(){applyLang();if(userData&&userData.onboardingDone){applyUserData();showView('elderView');checkReminders();startReminderCycle();setTimeout(()=>{if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{opacity:0,scale:0.8},{opacity:1,scale:1,duration:0.4,ease:'back.out(1.5)',delay:0.3});},100);}else{showView('onboardingView');if(localStorage.getItem('nona_lang')){document.getElementById('ob-lang').classList.remove('active');document.getElementById('ob0').classList.add('active');}}}
 
-  function openEmergency(){openModal('emergencyModal');}
-  function openMedicines(){openModal('medicinesModal');}
+function updateTime(){const now=new Date();const L=T[currentLang];document.getElementById('headerTime').textContent=L.days[now.getDay()]+', '+now.getDate()+' '+L.months[now.getMonth()]+' · '+now.toLocaleTimeString(currentLang,{hour:'2-digit',minute:'2-digit'});}
+updateTime();setInterval(updateTime,30000);
 
-  function openLocation(){openModal('locationModal');const addrEl=document.getElementById('locationAddr');const coordsEl=document.getElementById('locationCoords');addrEl.textContent=t('loc_searching');coordsEl.textContent='';if(!navigator.geolocation){addrEl.textContent='⚠️ GPS no disponible.';return;}setTimeout(()=>{navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude;const lng=pos.coords.longitude;coordsEl.textContent=lat.toFixed(5)+', '+lng.toFixed(5);addrEl.textContent=t('loc_getting');fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ca',{headers:{'User-Agent':'Nona/2.0'}}).then(r=>r.json()).then(d=>{const a=d.address||{};const str=[a.road,a.house_number,a.postcode,a.city||a.town||a.village||a.municipality].filter(Boolean).join(', ');addrEl.textContent=str||d.display_name||lat.toFixed(4)+', '+lng.toFixed(4);}).catch(()=>{addrEl.textContent='📍 '+lat.toFixed(4)+', '+lng.toFixed(4);});},(err)=>{addrEl.textContent=err.code===1?t('loc_denied'):t('loc_error');coordsEl.textContent='';},{enableHighAccuracy:true,timeout:15000,maximumAge:30000});},300);}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);if(id==='elderView'&&typeof gsap!=='undefined'){gsap.fromTo('#elderView .big-btn, #elderView .btn-row',{y:20,opacity:0},{y:0,opacity:1,duration:0.38,ease:'power2.out',stagger:0.06,delay:0.04});gsap.fromTo('#elderView .header-inner > div',{y:-10,opacity:0},{y:0,opacity:1,duration:0.35,ease:'power2.out'});}}
 
-  function shareLocation(){const btn=document.getElementById('shareLocationBtn');btn.textContent=t('loc_shared');btn.style.background='#27ae60';setTimeout(()=>{btn.textContent=t('loc_share');btn.style.background='';},3000);}
-  function openMaps(){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pos=>window.open('https://maps.google.com?q='+pos.coords.latitude+','+pos.coords.longitude,'_blank'));}
-  function simulateCall(name){closeModal('emergencyModal');alert(t('hello')+' '+name+'...');}
-  function sendEmergencyAlert(){closeModal('emergencyModal');document.getElementById('sendingOverlay').classList.add('open');setTimeout(()=>document.getElementById('sendingOverlay').classList.remove('open'),4000);}
-  function closeSending(){document.getElementById('sendingOverlay').classList.remove('open');}
+function openModal(id){const overlay=document.getElementById(id);overlay.classList.add('open');const modal=overlay.querySelector('.modal');if(typeof gsap!=='undefined')gsap.fromTo(modal,{y:'100%',opacity:0},{y:'0%',opacity:1,duration:0.36,ease:'power3.out'});else{modal.style.transform='translateY(0)';modal.style.opacity='1';}}
+function closeModal(id){const overlay=document.getElementById(id);const modal=overlay.querySelector('.modal');if(typeof gsap!=='undefined')gsap.to(modal,{y:'100%',opacity:0,duration:0.24,ease:'power2.in',onComplete:()=>overlay.classList.remove('open')});else overlay.classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{overlay.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);});});
 
-  const KEYWORDS=[{keys:['mareig','marejada','marejat','mareo','mareada','mareado','dizzy','vertigen','vertigo'],ca:'🪑 Seu o estira\'t ara mateix. Respira lentament. No et llevantis de cop.\n\n💧 Beu un got d\'aigua a poc a poc.\n\nSi el mareig dura més de 10 minuts o tens nàusees fortes, truca al 061 o demana ajuda a la família.',es:'🪑 Siéntate o túmbate ahora mismo. Respira despacio. No te levantes bruscamente.\n\n💧 Bebe un vaso de agua poco a poco.\n\nSi el mareo dura más de 10 minutos o tienes náuseas fuertes, llama al 061 o pide ayuda a la familia.',en:'🪑 Sit or lie down right now. Breathe slowly. Don\'t stand up suddenly.\n\n💧 Drink a glass of water slowly.\n\nIf the dizziness lasts more than 10 minutes or you feel very nauseous, call 112 or ask your family for help.'},{keys:['caiguda','caigut','caído','caída','fell','fall','m\'he caigut','me he caído'],ca:'⚠️ Queda\'t quieta. No et moguis fins que sàpigues si t\'has fet mal.\n\nComprova si tens dolor, tall o que no pots moure alguna part del cos.\n\nSi tens dolor fort o no pots aixecar-te, truca al 112.',es:'⚠️ Quédate quieta. No te muevas hasta que sepas si te has hecho daño.\n\nSi tienes dolor fuerte o no puedes levantarte, llama al 112.',en:'⚠️ Stay still. Don\'t move until you know if you\'ve hurt yourself.\n\nIf you have strong pain or can\'t get up, call 112.'},{keys:['dolor pit','dolor al pit','dolor pecho','chest pain','infart','cor'],ca:'🚨 Dolor al pit és una urgència. Para el que estàs fent.\n\nSeu, no t\'esforcis. Truca al 112 ARA o prem "Necessito ajuda".',es:'🚨 El dolor en el pecho es una urgencia. Para lo que estás haciendo.\n\nSiéntate. Llama al 112 AHORA o pulsa "Necesito ayuda".',en:'🚨 Chest pain is an emergency. Stop what you\'re doing.\n\nSit down. Call 112 NOW or press "I need help".'},{keys:['medicines','medicaments','medicamentos','pastilla','pastilles','pills','omeprazol','metformina'],ca:null,es:null,en:null,special:'medicines'},{keys:['febre','fiebre','fever','temperatura'],ca:'🌡️ Si tens febre (més de 37.5°C), descansa i beu molta aigua.\n\nSi la febre supera els 39°C o tens dificultat per respirar, truca al 061.',es:'🌡️ Si tienes fiebre (más de 37.5°C), descansa y bebe mucha agua.\n\nSi la fiebre supera los 39°C o tienes dificultad para respirar, llama al 061.',en:'🌡️ If you have a fever (above 37.5°C), rest and drink plenty of water.\n\nIf the fever exceeds 39°C or you have difficulty breathing, call 112.'},{keys:['on soc','on estic','perdut','perduda','perdido','perdida','lost','no sé on'],ca:'📍 Prem el botó "On sóc?" a la pantalla principal i t\'apareixerà la teva adreça exacta.\n\nTambé pots enviar la ubicació a la teva família amb un sol clic.',es:'📍 Pulsa el botón "¿Dónde estoy?" en la pantalla principal y verás tu dirección exacta.',en:'📍 Press the "Where am I?" button on the main screen and you\'ll see your exact address.'},{keys:['taxi','transport','bus','metro'],ca:'🚌 Prem el botó "Transport" a la pantalla principal per demanar taxi o veure parades properes.',es:'🚌 Pulsa el botón "Transporte" en la pantalla principal para pedir taxi o ver paradas cercanas.',en:'🚌 Press the "Transport" button on the main screen to request a taxi or see nearby stops.'},{keys:['gràcies','gracias','thank','molt bé','muy bien','perfect'],ca:'De res! 😊 Estic aquí sempre que em necessitis. Cuida\'t molt.',es:'¡De nada! 😊 Estoy aquí siempre que me necesites. ¡Cuídate mucho!',en:'You\'re welcome! 😊 I\'m here whenever you need me. Take care!'}];
+function openEmergency(){openModal('emergencyModal');}
+function openMedicines(){openModal('medicinesModal');}
 
-  function detectKeyword(text){const lower=text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');for(const kw of KEYWORDS){const keys=kw.keys.map(k=>k.normalize('NFD').replace(/[̀-ͯ]/g,''));if(keys.some(k=>lower.includes(k)))return kw;}return null;}
-  function getSmartResponse(text){const match=detectKeyword(text);if(!match){const generic={ca:'No he entès del tot el que necessites. Pots dir-me si tens algun símptoma (mareig, dolor, febre...), si necessites anar a algun lloc, o si vols que truqui a algú? 🩺',es:'No he entendido del todo qué necesitas. ¿Puedes decirme si tienes algún síntoma, si necesitas ir a algún sitio, o si quieres que llame a alguien? 🩺',en:'I didn\'t quite understand what you need. Can you tell me if you have any symptom, if you need to go somewhere, or if you want me to call someone? 🩺'};return generic[currentLang]||generic.ca;}if(match.special==='medicines'){return t('chat_med',userData?.alias||userData?.nom||'');}return match[currentLang]||match.ca;}
+function openLocation(){openModal('locationModal');const addrEl=document.getElementById('locationAddr');const coordsEl=document.getElementById('locationCoords');addrEl.textContent=t('loc_searching');coordsEl.textContent='';if(!navigator.geolocation){addrEl.textContent='⚠️ GPS no disponible.';return;}setTimeout(()=>{navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude;const lng=pos.coords.longitude;coordsEl.textContent=lat.toFixed(5)+', '+lng.toFixed(5);addrEl.textContent=t('loc_getting');fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ca',{headers:{'User-Agent':'Nona/3.0'}}).then(r=>r.json()).then(d=>{const a=d.address||{};const str=[a.road,a.house_number,a.postcode,a.city||a.town||a.village||a.municipality].filter(Boolean).join(', ');addrEl.textContent=str||d.display_name||lat.toFixed(4)+', '+lng.toFixed(4);}).catch(()=>{addrEl.textContent='📍 '+lat.toFixed(4)+', '+lng.toFixed(4);});},(err)=>{addrEl.textContent=err.code===1?t('loc_denied'):t('loc_error');coordsEl.textContent='';},{enableHighAccuracy:true,timeout:15000,maximumAge:30000});},300);}
 
-  function openChat(context){openModal('chatModal');if(context==='medicines')setTimeout(()=>addMessage(t('chat_med',userData?.alias||''),'ai'),500);setTimeout(()=>document.getElementById('chatInput').focus(),300);}
-  function addMessage(text,role){const msgs=document.getElementById('chatMessages');const div=document.createElement('div');div.className='msg '+role;div.style.whiteSpace='pre-line';div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;}
-  function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;addMessage(text,'user');input.value='';const loading=addMessage(t('chat_thinking'),'ai loading');setTimeout(()=>{loading.remove();addMessage(getSmartResponse(text),'ai');},700);}
+function shareLocation(){const btn=document.getElementById('shareLocationBtn');btn.textContent=t('loc_shared');btn.style.background='#27ae60';setTimeout(()=>{btn.textContent=t('loc_share');btn.style.background='';},3000);}
+function openMaps(){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pos=>window.open('https://maps.google.com?q='+pos.coords.latitude+','+pos.coords.longitude,'_blank'));}
+function simulateCall(name){closeModal('emergencyModal');alert(t('hello')+' '+name+'...');}
+function sendEmergencyAlert(){closeModal('emergencyModal');document.getElementById('sendingOverlay').classList.add('open');setTimeout(()=>document.getElementById('sendingOverlay').classList.remove('open'),4000);}
+function closeSending(){document.getElementById('sendingOverlay').classList.remove('open');}
 
-  function openTransport(){openModal('transportModal');document.getElementById('transitResults').innerHTML='<span style="color:var(--soft);font-style:italic;">'+t('tr_hint')+'</span>';}
-  function callTaxi(s){if(s==='uber')navigator.geolocation.getCurrentPosition(()=>window.open('https://m.uber.com/ul/?action=setPickup&pickup=my_location','_blank'),()=>window.open('https://m.uber.com','_blank'));else window.open('https://cabify.com/app','_blank');}
-  function findTransit(){const box=document.getElementById('transitResults');box.innerHTML='<span style="color:var(--soft);">📡 Buscant...</span>';if(!navigator.geolocation){box.innerHTML='<span style="color:var(--emergency);">GPS no disponible.</span>';return;}navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude;const lng=pos.coords.longitude;box.innerHTML='<div style="text-align:left;"><div class="transit-item"><div class="transit-icon">🚌</div><div class="transit-info"><div class="transit-name">Parada de bus</div><div class="transit-dist">~80 metres</div></div><div class="transit-num">Bus</div></div><div class="transit-item"><div class="transit-icon">🚇</div><div class="transit-info"><div class="transit-name">Estació de metro</div><div class="transit-dist">~350 metres</div></div><div class="transit-num">Metro</div></div><div style="margin-top:12px;text-align:center;"><button class="action-btn primary" style="margin:0;" onclick="window.open(\'https://www.google.com/maps/search/parada+bus+metro/@'+lat+','+lng+',16z\',\'_blank\')">🗺️ Veure al mapa</button></div></div>';},()=>{box.innerHTML='<span style="color:var(--emergency);">No s\'ha pogut obtenir la ubicació.</span>';});}
-  function navigateTo(dest){if(dest==='home'){const homeAddr=encodeURIComponent(userData?.casa||'Barcelona');window.open('https://www.google.com/maps/dir/?api=1&destination='+homeAddr+'&travelmode=transit','_blank');}else{navigator.geolocation.getCurrentPosition(pos=>window.open('https://www.google.com/maps/search/hospital/@'+pos.coords.latitude+','+pos.coords.longitude+',14z','_blank'),()=>window.open('https://www.google.com/maps/search/hospital+barcelona','_blank'));}}
+const KEYWORDS=[{keys:['mareig','marejada','marejat','mareo','dizzy','vertigen','vertigo'],ca:'🪑 Seu o estira\'t ara mateix. Respira lentament.\n\n💧 Beu un got d\'aigua a poc a poc.\n\nSi el mareig dura més de 10 minuts, truca al 061.',es:'🪑 Siéntate o túmbate ahora mismo. Respira despacio.\n\n💧 Bebe un vaso de agua poco a poco.\n\nSi el mareo dura más de 10 minutos, llama al 061.',en:'🪑 Sit or lie down right now. Breathe slowly.\n\n💧 Drink a glass of water slowly.\n\nIf dizziness lasts more than 10 minutes, call 112.'},{keys:['caiguda','caigut','caído','caída','fell','fall'],ca:'⚠️ Queda\'t quieta. Comprova si tens dolor.\n\nSi no pots aixecar-te, truca al 112.',es:'⚠️ Quédate quieta. Comprueba si tienes dolor.\n\nSi no puedes levantarte, llama al 112.',en:'⚠️ Stay still. Check if you\'re in pain.\n\nIf you can\'t get up, call 112.'},{keys:['dolor pit','dolor al pit','dolor pecho','chest pain'],ca:'🚨 Dolor al pit és una urgència. Truca al 112 ARA.',es:'🚨 El dolor en el pecho es urgente. Llama al 112 AHORA.',en:'🚨 Chest pain is an emergency. Call 112 NOW.'},{keys:['medicines','medicaments','medicamentos','pastilla','pastilles','pills','omeprazol'],ca:null,es:null,en:null,special:'medicines'},{keys:['febre','fiebre','fever','temperatura'],ca:'🌡️ Descansa i beu molta aigua. Si supera 39°C o tens dificultat per respirar, truca al 061.',es:'🌡️ Descansa y bebe mucha agua. Si supera 39°C o tienes dificultad para respirar, llama al 061.',en:'🌡️ Rest and drink plenty of water. If above 39°C or you have difficulty breathing, call 112.'},{keys:['on soc','on estic','perdut','perduda','perdido','perdida','lost'],ca:'📍 Prem el botó "On sóc?" a la pantalla principal per veure on ets exactament.',es:'📍 Pulsa el botón "¿Dónde estoy?" en la pantalla principal.',en:'📍 Press the "Where am I?" button on the main screen.'},{keys:['taxi','transport','bus','metro'],ca:'🚌 Prem el botó "Transport" per demanar taxi o veure parades properes.',es:'🚌 Pulsa el botón "Transporte" para pedir taxi o ver paradas cercanas.',en:'🚌 Press the "Transport" button to request a taxi or see nearby stops.'},{keys:['gràcies','gracias','thank','molt bé','muy bien','perfect'],ca:'De res! Estic aquí sempre que em necessitis. 😊',es:'¡De nada! Estoy aquí siempre que me necesites. 😊',en:"You're welcome! I'm here whenever you need me. 😊"}];
 
-  let recognition=null,isRecording=false;
-  function toggleVoice(){const btn=document.getElementById('voiceBtn');const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert(t('voice_error'));return;}if(isRecording){recognition.stop();return;}recognition=new SR();recognition.lang=t('speech_lang');recognition.continuous=false;recognition.interimResults=false;recognition.onstart=()=>{isRecording=true;btn.textContent='⏹️';btn.classList.add('recording');};recognition.onresult=e=>{document.getElementById('chatInput').value=e.results[0][0].transcript;sendChat();};recognition.onend=()=>{isRecording=false;btn.textContent='🎤';btn.classList.remove('recording');};recognition.onerror=()=>{isRecording=false;btn.textContent='🎤';btn.classList.remove('recording');};recognition.start();}
+function detectKeyword(text){const lower=text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');for(const kw of KEYWORDS){const keys=kw.keys.map(k=>k.normalize('NFD').replace(/[̀-ͯ]/g,''));if(keys.some(k=>lower.includes(k)))return kw;}return null;}
+function getSmartResponse(text){const match=detectKeyword(text);if(!match){const g={ca:'No ho he entès del tot. Pots dir-me si et sents perduda, si necessites anar a algun lloc, o si vols que truqui a algú? 😊',es:'No lo he entendido del todo. ¿Puedes decirme si te sientes perdida, si necesitas ir a algún sitio, o si quieres que llame a alguien? 😊',en:"I didn't quite understand. Can you tell me if you feel lost, if you need to go somewhere, or if you want me to call someone? 😊"};return g[currentLang]||g.ca;}if(match.special==='medicines')return t('chat_med',userData?.alias||userData?.nom||'');return match[currentLang]||match.ca;}
 
-  init();
-  if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+function openChat(context){openModal('chatModal');if(context==='medicines')setTimeout(()=>addMessage(t('chat_med',userData?.alias||''),'ai'),500);setTimeout(()=>document.getElementById('chatInput').focus(),300);}
+function addMessage(text,role){const msgs=document.getElementById('chatMessages');const div=document.createElement('div');div.className='msg '+role;div.style.whiteSpace='pre-line';div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;}
+function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;addMessage(text,'user');input.value='';const loading=addMessage(t('chat_thinking'),'ai loading');setTimeout(()=>{loading.remove();addMessage(getSmartResponse(text),'ai');},700);}
+
+function openTransport(){openModal('transportModal');document.getElementById('transitResults').innerHTML='<span style="color:var(--soft);font-style:italic;">'+t('tr_hint')+'</span>';}
+function callTaxi(s){if(s==='uber')navigator.geolocation.getCurrentPosition(()=>window.open('https://m.uber.com/ul/?action=setPickup&pickup=my_location','_blank'),()=>window.open('https://m.uber.com','_blank'));else window.open('https://cabify.com/app','_blank');}
+function findTransit(){const box=document.getElementById('transitResults');box.innerHTML='<span style="color:var(--soft);">📡 Buscant...</span>';if(!navigator.geolocation){box.innerHTML='<span style="color:var(--emergency);">GPS no disponible.</span>';return;}navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude;const lng=pos.coords.longitude;box.innerHTML='<div style="text-align:left;"><div class="transit-item"><div class="transit-icon">🚌</div><div class="transit-info"><div class="transit-name">Parada de bus</div><div class="transit-dist">~80 metres</div></div><div class="transit-num">Bus</div></div><div class="transit-item"><div class="transit-icon">🚇</div><div class="transit-info"><div class="transit-name">Estació de metro</div><div class="transit-dist">~350 metres</div></div><div class="transit-num">Metro</div></div><div style="margin-top:12px;text-align:center;"><button class="action-btn primary" style="margin:0;" onclick="window.open(\'https://www.google.com/maps/search/parada+bus+metro/@'+lat+','+lng+',16z\',\'_blank\')">🗺️ Veure al mapa</button></div></div>';},()=>{box.innerHTML='<span style="color:var(--emergency);">No s\'ha pogut obtenir la ubicació.</span>';});}
+function navigateTo(dest){if(dest==='home'){const a=encodeURIComponent(userData?.casa||'Barcelona');window.open('https://www.google.com/maps/dir/?api=1&destination='+a+'&travelmode=transit','_blank');}else{navigator.geolocation.getCurrentPosition(pos=>window.open('https://www.google.com/maps/search/hospital/@'+pos.coords.latitude+','+pos.coords.longitude+',14z','_blank'),()=>window.open('https://www.google.com/maps/search/hospital+barcelona','_blank'));}}
+
+let recognition=null,isRecording=false;
+function toggleVoice(){const btn=document.getElementById('voiceBtn');const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert(t('voice_error'));return;}if(isRecording){recognition.stop();return;}recognition=new SR();recognition.lang=t('speech_lang');recognition.continuous=false;recognition.interimResults=false;recognition.onstart=()=>{isRecording=true;btn.textContent='⏹️';btn.classList.add('recording');};recognition.onresult=e=>{document.getElementById('chatInput').value=e.results[0][0].transcript;sendChat();};recognition.onend=()=>{isRecording=false;btn.textContent='🎤';btn.classList.remove('recording');};recognition.onerror=()=>{isRecording=false;btn.textContent='🎤';btn.classList.remove('recording');};recognition.start();}
+
+init();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>
 </body>
 </html>
