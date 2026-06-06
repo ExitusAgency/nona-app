@@ -931,11 +931,6 @@ body {
   <button onclick="unlock()" style="width:100%;max-width:320px;padding:20px;background:var(--color-navy);color:white;border:none;border-radius:var(--r);font-size:20px;font-family:var(--font-display);font-weight:700;cursor:pointer;box-shadow:0 4px 20px oklch(26% 0.072 240 / 0.3);">
     Entrar →
   </button>
-  <div style="margin-top:48px;padding-top:24px;border-top:1px solid oklch(85% 0.012 80);width:100%;max-width:320px;">
-    <button onclick="confirmReset()" style="background:none;border:none;color:oklch(65% 0.010 240);font-size:12px;cursor:pointer;font-family:var(--font-body);text-decoration:underline;">
-      Esborrar totes les dades i tornar a configurar
-    </button>
-  </div>
 </div>
 
 <!-- ONBOARDING -->
@@ -1372,7 +1367,32 @@ body {
   function startReminderCycle(){clearInterval(reminderInterval);reminderInterval=setInterval(()=>{if(!userData)return;const missing=REMINDER_FIELDS.filter(f=>!userData[f.key]);if(!missing.length){document.getElementById('reminderBanner').style.display='none';clearInterval(reminderInterval);return;}currentReminder++;checkReminders();},8000);}
   function goToReminder(){const banner=document.getElementById('reminderBanner');const ob=banner._reminderOb||2;document.querySelectorAll('.ob-screen').forEach(s=>s.classList.remove('active'));document.getElementById('ob'+ob).classList.add('active');userData._editingFromReminder=true;showView('onboardingView');}
   function resetOnboarding(){if(confirm(t('fam_confirm_reset'))){localStorage.removeItem('nona_user');userData=null;secondaryAddrs=[];selectedSang='';['ob-nom','ob-cognoms','ob-cap','ob-hospital','ob-alergies'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.querySelectorAll('.ob-chip').forEach(c=>c.classList.remove('selected'));document.getElementById('ob-addrs-list').innerHTML='';document.querySelectorAll('.ob-screen').forEach(s=>s.classList.remove('active'));document.getElementById('ob0').classList.add('active');showView('onboardingView');}}
-  function init(){applyLang();if(userData&&userData.onboardingDone){applyUserData();showView('elderView');checkReminders();startReminderCycle();setTimeout(()=>{if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{opacity:0,scale:0.82},{opacity:1,scale:1,duration:0.38,ease:'back.out(1.5)',delay:0.25});},80);}else{showView('onboardingView');if(localStorage.getItem('nona_lang')){document.getElementById('ob-lang').classList.remove('active');document.getElementById('ob0').classList.add('active');}}}
+  function init(){
+    applyLang();
+    if(userData&&userData.onboardingDone){
+      // Usuari registrat: mostra pantalla de bloqueig
+      const alias=userData.alias||userData.nom||'';
+      const lockName=document.getElementById('lockName');
+      const lockSub=document.getElementById('lockSub');
+      if(lockName)lockName.textContent=alias?'Hola, '+alias+'!':'Hola!';
+      if(lockSub)lockSub.textContent='Prem per entrar a la Nona';
+      showView('lockView');
+    }else{
+      // Primer ús: mostra onboarding (selecció d'idioma)
+      showView('onboardingView');
+      if(localStorage.getItem('nona_lang')){
+        document.getElementById('ob-lang').classList.remove('active');
+        document.getElementById('ob0').classList.add('active');
+      }
+    }
+  }
+  function unlock(){
+    applyUserData();
+    showView('elderView');
+    checkReminders();
+    startReminderCycle();
+    setTimeout(()=>{if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{opacity:0,scale:0.82},{opacity:1,scale:1,duration:0.38,ease:'back.out(1.5)',delay:0.25});},80);
+  }
   function updateTime(){const now=new Date();const L=T[currentLang];const el=document.getElementById('headerTime');if(el)el.textContent=L.days[now.getDay()]+' '+now.getDate()+' '+L.months[now.getMonth()]+' · '+now.toLocaleTimeString(currentLang,{hour:'2-digit',minute:'2-digit'});}
   updateTime();setInterval(updateTime,30000);
   function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);if(id==='elderView'&&typeof gsap!=='undefined'){gsap.fromTo('#elderView .big-btn',{y:20,opacity:0,scale:0.97},{y:0,opacity:1,scale:1,duration:0.38,ease:'power3.out',stagger:0.05,delay:0.03});gsap.fromTo('.header-inner',{y:-6,opacity:0},{y:0,opacity:1,duration:0.28,ease:'power2.out'});}if(id==='familyView'){renderContactList();if(typeof gsap!=='undefined')gsap.fromTo('#familyView .med-edit-item,#familyView .config-row',{y:14,opacity:0},{y:0,opacity:1,duration:0.28,ease:'power2.out',stagger:0.04,delay:0.04});}}
@@ -1502,9 +1522,6 @@ body {
     if(lockName)lockName.textContent=alias?'Hola, '+alias+'!':'Hola!';
     if(lockSub)lockSub.textContent=t('lock_sub')||'Prem per entrar a la Nona';
     showView('lockView');
-  }
-  function unlock(){
-    showView('elderView');
   }
   function confirmReset(){
     if(confirm('Segur? S\'esborraran TOTES les dades (nom, contactes, medicines, adreces...) i hauràs de tornar a configurar-ho tot.')){
