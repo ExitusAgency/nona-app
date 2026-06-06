@@ -976,8 +976,8 @@ body {
       <div class="ob-field" style="flex:1;"><label class="ob-label">Pis / Porta</label><input class="ob-input" id="ob-casa-pis" type="text" placeholder="2n 1a"></div>
     </div>
     <div style="display:flex;gap:9px;">
-      <div class="ob-field" style="flex:0 0 105px;"><label class="ob-label">Codi Postal</label><input class="ob-input" id="ob-casa-cp" type="text" inputmode="numeric" maxlength="5" placeholder="08001"></div>
-      <div class="ob-field" style="flex:1;"><label class="ob-label">Municipi</label><input class="ob-input" id="ob-casa-muni" type="text" placeholder="Barcelona, Lleida..."></div>
+      <div class="ob-field" style="flex:0 0 105px;"><label class="ob-label">Codi Postal</label><input class="ob-input" id="ob-casa-cp" type="text" inputmode="numeric" maxlength="5" placeholder="08001" oninput="lookupPostalCode(this.value)"></div>
+      <div class="ob-field" style="flex:1;"><label class="ob-label">Municipi <span id="cp-loading" style="display:none;font-size:10px;color:oklch(48% 0.098 195);font-weight:400;">⏳</span></label><input class="ob-input" id="ob-casa-muni" type="text" placeholder="Barcelona, Lleida..."></div>
     </div>
     <div class="ob-field"><label class="ob-label">Província</label>
       <select class="ob-select" id="ob-casa-prov"><option value="">Selecciona...</option><option>Barcelona</option><option>Girona</option><option>Lleida</option><option>Tarragona</option></select>
@@ -1519,6 +1519,39 @@ body {
     saveMeds(meds);closeModal('medFormModal');renderMedList();
   }
   function deleteMed(idx){if(confirm('Eliminar aquest medicament?')){const meds=getMeds();meds.splice(idx,1);saveMeds(meds);renderMedList();}}
+  // ── CODI POSTAL → MUNICIPI / PROVÍNCIA ──
+  let cpTimeout;
+  const PROV_MAP={'01':'Àlaba','02':'Albacete','03':'Alacant','04':'Almeria','05':'Àvila','06':'Badajoz','07':'Illes Balears','08':'Barcelona','09':'Burgos','10':'Càceres','11':'Cadis','12':'Castelló','13':'Ciudad Real','14':'Còrdova','15':'La Corunya','16':'Conca','17':'Girona','18':'Granada','19':'Guadalajara','20':'Guipúscoa','21':'Huelva','22':'Osca','23':'Jaén','24':'Lleó','25':'Lleida','26':'La Rioja','27':'Lugo','28':'Madrid','29':'Màlaga','30':'Múrcia','31':'Navarra','32':'Ourense','33':'Astúries','34':'Palència','35':'Las Palmas','36':'Pontevedra','37':'Salamanca','38':'Santa Cruz de Tenerife','39':'Cantàbria','40':'Segòvia','41':'Sevilla','42':'Sòria','43':'Tarragona','44':'Terol','45':'Toledo','46':'València','47':'Valladolid','48':'Biscaia','49':'Zamora','50':'Saragossa','51':'Ceuta','52':'Melilla'};
+  function lookupPostalCode(val){
+    val=val.replace(/\D/g,'');
+    if(val.length!==5){return;}
+    clearTimeout(cpTimeout);
+    cpTimeout=setTimeout(()=>{
+      const loading=document.getElementById('cp-loading');
+      if(loading)loading.style.display='inline';
+      fetch('https://api.zippopotam.us/es/'+val)
+        .then(r=>{if(!r.ok)throw new Error();return r.json();})
+        .then(d=>{
+          if(loading)loading.style.display='none';
+          if(!d.places||!d.places.length)return;
+          const place=d.places[0];
+          const muniEl=document.getElementById('ob-casa-muni');
+          const provEl=document.getElementById('ob-casa-prov');
+          if(muniEl&&!muniEl.value)muniEl.value=place['place name']||'';
+          // Mapa prefix CP → província
+          const prefix=val.substring(0,2);
+          const provName=PROV_MAP[prefix]||'';
+          if(provEl&&provName){
+            const opts=Array.from(provEl.options);
+            const match=opts.find(o=>o.text.toLowerCase()===provName.toLowerCase()||provName.toLowerCase().includes(o.text.toLowerCase()));
+            if(match)provEl.value=match.value;
+          }
+          // Animació suau al camp municipi
+          if(muniEl&&typeof gsap!=='undefined')gsap.fromTo(muniEl,{borderColor:'oklch(58% 0.088 195)'},{borderColor:'',duration:1.2,ease:'power2.out'});
+        })
+        .catch(()=>{if(loading)loading.style.display='none';});
+    },400);
+  }
   function logOut(){
     const alias=userData?.alias||userData?.nom||'';
     const lockName=document.getElementById('lockName');
