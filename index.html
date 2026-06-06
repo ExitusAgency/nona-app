@@ -1343,10 +1343,71 @@ body {
   let userData=JSON.parse(localStorage.getItem('nona_user')||'null');
   function saveUser(){localStorage.setItem('nona_user',JSON.stringify(userData));}
   let selectedSang='',secondaryAddrs=[];
-  const CAPS_CAT=['CAP Barceloneta','CAP Bordeta-Magòria','CAP Cappont','CAP Castelldefels','CAP Centelles','CAP Cerdanyola del Vallès','CAP Chafarinas','CAP Cornellà de Llobregat','CAP Drassanes','CAP El Carmel','CAP El Clot','CAP El Gornal','CAP El Prat de Llobregat','CAP Eixample','CAP Esplugues de Llobregat','CAP Gòtic','CAP Granollers','CAP Guinardó','CAP Horta','CAP Igualada','CAP La Barceloneta','CAP La Mina','CAP La Pau','CAP La Sagrera','CAP Les Corts','CAP Lleida Balàfia','CAP Lleida Centre','CAP Lleida Rambla Ferran','CAP Manlleu','CAP Manresa','CAP Maragall','CAP Martorell','CAP Mataró','CAP Mollet del Vallès','CAP Montcada i Reixac','CAP Montornès del Vallès','CAP Nou Barris','CAP Olot','CAP Osona','CAP Parets del Vallès','CAP Poble Sec','CAP Premià de Mar','CAP Reus','CAP Ripollet','CAP Rubí','CAP Sabadell','CAP Salt','CAP Sant Andreu','CAP Sant Antoni','CAP Sant Boi de Llobregat','CAP Sant Cugat del Vallès','CAP Sant Feliu de Guíxols','CAP Sant Joan Despí','CAP Sant Just Desvern','CAP Sant Pere Claver','CAP Santa Coloma de Gramenet','CAP Sarrià','CAP Sants','CAP Tarragona','CAP Terrassa','CAP Tortosa','CAP Trinitat Nova','CAP Trinitat Vella','CAP Vallcarca','CAP Verdaguer','CAP Vic','CAP Viladecans','CAP Vilafranca del Penedès','CAP Vilanova i la Geltrú','CAP Vila Olímpica','CAP Virrei Amat','EAP Badalona','EAP Castellbisbal','EAP Gavà','EAP Lloret de Mar','EAP Molins de Rei','EAP Montgat','EAP Sant Adrià de Besòs','EAP Tiana','EAP Vilassar de Mar'];
-  const HOSPITALS_CAT=['Hospital Clínic de Barcelona','Hospital de la Santa Creu i Sant Pau','Hospital del Mar','Hospital de Bellvitge','Hospital Germans Trias i Pujol','Hospital Universitari Vall d\'Hebron','Hospital de Sant Joan de Déu','Hospital Sagrat Cor','Hospital Quirónsalud Barcelona','Hospital de Sabadell','Hospital de Terrassa','Hospital de Mataró','Hospital de Granollers','Hospital de Cornellà','Hospital de Sant Joan Despí Moisès Broggi','Hospital de Viladecans','Hospital de l\'Esperança','Hospital Municipal de Badalona','Hospital Sant Rafael','Hospital de Palamós','Hospital Santa Caterina de Salt','Hospital de Figueres','Hospital Universitari de Girona Doctor Josep Trueta','Hospital de Vic','Hospital de Manresa','Hospital Sant Joan de Déu de Manresa','Hospital de Igualada','Hospital Universitari Joan XXIII de Tarragona','Hospital de Reus','Hospital de Tortosa Verge de la Cinta','Hospital Santa Maria de Lleida','Hospital Universitari Arnau de Vilanova de Lleida','Clínica Corachan','Clínica Teknon','Clínica Plató','Clínica Quirón'];
+  const CAPS_CAT=[
+    // Barcelona ciutat
+    'CAP Barceloneta','CAP Bordeta-Magòria','CAP Capsanes','CAP Chafarinas','CAP Drassanes','CAP Eixample','CAP El Carmel','CAP El Clot','CAP El Congrés','CAP El Gòtic','CAP El Guinardó','CAP El Poblenou','CAP El Poble Sec','CAP El Remei','CAP La Barceloneta','CAP La Mina','CAP La Pau','CAP La Sagrera','CAP La Vall d\'Hebron','CAP Les Corts','CAP Maragall','CAP Nou Barris','CAP Passeig de Sant Joan','CAP Raval Sud','CAP Raval Nord','CAP Roger de Flor','CAP Sant Andreu','CAP Sant Antoni','CAP Sant Martí','CAP Sant Pere Claver','CAP Sarrià','CAP Sants','CAP Sardenya','CAP Trinitat Nova','CAP Trinitat Vella','CAP Turó de la Peira','CAP Vallcarca','CAP Verdaguer','CAP Via Roma','CAP Vila Olímpica','CAP Virrei Amat',
+    // Barcelonès i Baix Llobregat
+    'CAP Badalona Barceloneta','CAP Badalona Centre','CAP Badalona La Salut','CAP Badalona Morera','CAP Castelldefels','CAP Cornellà de Llobregat','CAP El Prat de Llobregat','CAP El Gornal','CAP Esplugues de Llobregat','CAP Gavà','CAP Gavà Mar','CAP Hospitalet de Llobregat Centre','CAP Hospitalet de Llobregat Torrassa','CAP Hospitalet de Llobregat Santa Eulàlia','CAP Martorell','CAP Molins de Rei','CAP Montcada i Reixac','CAP Sant Boi de Llobregat','CAP Sant Feliu de Llobregat','CAP Sant Joan Despí','CAP Sant Just Desvern','CAP Sant Vicenç dels Horts','CAP Santa Coloma de Gramenet Centre','CAP Santa Coloma de Gramenet Fondo','CAP Viladecans',
+    // Vallès Occidental i Oriental
+    'CAP Barberà del Vallès','CAP Castellbisbal','CAP Cerdanyola del Vallès','CAP Granollers','CAP La Llagosta','CAP Les Franqueses del Vallès','CAP Mollet del Vallès','CAP Montornès del Vallès','CAP Parets del Vallès','CAP Polinyà','CAP Ripollet','CAP Rubí','CAP Sabadell Centre','CAP Sabadell Creu Alta','CAP Sabadell Nord','CAP Sabadell Sud','CAP Sant Celoni','CAP Sant Cugat del Vallès','CAP Sant Quirze del Vallès','CAP Terrassa Centre','CAP Terrassa Est','CAP Terrassa Nord','CAP Terrassa Oest',
+    // Maresme i Osona
+    'CAP Arenys de Mar','CAP Calella','CAP Centelles','CAP El Masnou','CAP Malgrat de Mar','CAP Manlleu','CAP Mataró Cirera','CAP Mataró Centre','CAP Mataró Ronda Prim','CAP Pineda de Mar','CAP Premià de Mar','CAP Santa Susanna','CAP Tordera','CAP Vic','CAP Vilassar de Mar',
+    // Penedès i Garraf
+    'CAP Cubelles','CAP Sitges','CAP Vilafranca del Penedès','CAP Vilanova i la Geltrú',
+    // Anoia i Bages
+    'CAP Igualada','CAP Manresa Centre','CAP Manresa Nord','CAP Navarcles','CAP Sant Fruitós de Bages','CAP Súria',
+    // Girona
+    'CAP Banyoles','CAP Blanes','CAP Caldes de Malavella','CAP Cassà de la Selva','CAP Figueres','CAP Girona Centre','CAP Girona Nord','CAP Girona Montilivi','CAP La Bisbal d\'Empordà','CAP Lloret de Mar','CAP Olot','CAP Palafrugell','CAP Palamós','CAP Ripoll','CAP Roses','CAP Salt','CAP Sant Feliu de Guíxols','CAP Sant Joan de les Abadesses','CAP Santa Coloma de Farners',
+    // Lleida
+    'CAP Alpicat','CAP Balaguer','CAP Cappont','CAP Igualada','CAP La Bordeta','CAP Lleida Balàfia','CAP Lleida Centre','CAP Lleida Rambla Ferran','CAP Mollerussa','CAP Tàrrega','CAP Tremp',
+    // Tarragona
+    'CAP Amposta','CAP Calafell','CAP Cambrils','CAP El Vendrell','CAP Reus Centre','CAP Reus Nord','CAP Salou','CAP Tarragona Part Alta','CAP Tarragona Sant Pere i Sant Pau','CAP Tortosa','CAP Valls',
+    // EAPs
+    'EAP Badalona 1','EAP Badalona 2','EAP Badalona 3','EAP Badalona 4','EAP Badalona 5','EAP Badalona 6','EAP Badalona 7','EAP Castellbisbal','EAP Gavà','EAP Lloret de Mar','EAP Molins de Rei','EAP Montgat','EAP Sant Adrià de Besòs','EAP Sant Andreu de la Barca','EAP Tiana','EAP Vilassar de Mar','EAP Vilassar de Dalt'
+  ];
+  const HOSPITALS_CAT=[
+    // Barcelona ciutat - Públics
+    'Hospital Clínic de Barcelona','Hospital de la Santa Creu i Sant Pau','Hospital del Mar','Hospital de Bellvitge','Hospital Germans Trias i Pujol','Hospital Universitari Vall d\'Hebron','Hospital de Sant Joan de Déu','Hospital de l\'Esperança','Hospital Municipal de Badalona','Hospital de Sant Rafael',
+    // Barcelona - Privats i concertats
+    'Hospital Sagrat Cor','Hospital Quirónsalud Barcelona','Clínica Corachan','Clínica Teknon','Clínica Plató','Clínica Quirón Dexeus','Hospital Universitari Sagrat Cor','Hospital de Barcelona','Institut Guttmann','Hospital Asepeyo',
+    // Barcelonès i Baix Llobregat
+    'Hospital de Cornellà','Hospital de Sant Joan Despí Moisès Broggi','Hospital de Viladecans','Hospital General de Granollers','Hospital de Mollet','Hospital de Terrassa','Hospital Mútua Terrassa','Hospital de Sabadell Corporació Sanitària Parc Taulí','Hospital de Mataró','Hospital de Sant Celoni',
+    // Girona
+    'Hospital Universitari de Girona Doctor Josep Trueta','Hospital Santa Caterina de Salt','Hospital de Palamós','Hospital de Figueres','Hospital de Blanes','Hospital Comarcal de la Selva','Hospital de Campdevànol','Hospital de Olot i Comarcal de la Garrotxa','Hospital Comarcal de Ripoll',
+    // Lleida
+    'Hospital Universitari Arnau de Vilanova de Lleida','Hospital Santa Maria de Lleida','Hospital de la Seu d\'Urgell','Hospital Comarcal del Pallars','Hospital de Tremp',
+    // Tarragona
+    'Hospital Universitari Joan XXIII de Tarragona','Hospital de Reus','Hospital Universitari Sant Joan de Reus','Hospital de Tortosa Verge de la Cinta','Hospital Comarcal Móra d\'Ebre','Hospital del Vendrell','Hospital Comarcal de l\'Alt Penedès',
+    // Osona i Bages
+    'Hospital de Vic','Hospital General de Vic','Hospital de Manresa Sant Joan de Déu','Hospital Sant Andreu de Manresa','Hospital d\'Igualada',
+    // Clíniques i especialitzats
+    'Clínica Girona','Institut Català d\'Oncologia','Fundació Puigvert','Hospital de Dia Terrassa','Centre Mèdic Teknon Lleida'
+  ];
   let acDebounce=null;
-  function autocomplete(type,query){const inputId=type==='cap'?'ob-cap':'ob-hospital';const input=document.getElementById(inputId);const drop=document.getElementById('ac-'+type);if(!query||query.length<2){drop.classList.remove('open');return;}clearTimeout(acDebounce);acDebounce=setTimeout(()=>{const list=type==='cap'?CAPS_CAT:HOSPITALS_CAT;const q=query.toLowerCase();const matches=list.filter(s=>s.toLowerCase().includes(q)).slice(0,6);if(!matches.length){drop.classList.remove('open');return;}const rect=input.getBoundingClientRect();drop.style.top=(rect.bottom+4)+'px';drop.style.left=rect.left+'px';drop.style.width=rect.width+'px';const hl=(s)=>s.replace(new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<strong>$1</strong>');drop.innerHTML=matches.map(m=>'<div class="ac-item" onclick="selectAC(\''+type+'\',\''+m.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\'">'+hl(m)+'</div>').join('');drop.classList.add('open');},150);}
+  function autocomplete(type,query){
+    const inputId=type==='cap'?'ob-cap':'ob-hospital';
+    const input=document.getElementById(inputId);
+    const drop=document.getElementById('ac-'+type);
+    if(!query||query.length<2){drop.classList.remove('open');return;}
+    clearTimeout(acDebounce);
+    acDebounce=setTimeout(()=>{
+      const list=type==='cap'?CAPS_CAT:HOSPITALS_CAT;
+      const q=query.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      const starts=list.filter(s=>norm(s).includes('cap '+q)||norm(s).includes('eap '+q)||norm(s).startsWith(q));
+      const rest=list.filter(s=>!starts.includes(s)&&norm(s).includes(q));
+      const matches=[...starts,...rest].slice(0,8);
+      if(!matches.length){drop.classList.remove('open');return;}
+      const rect=input.getBoundingClientRect();
+      drop.style.top=(rect.bottom+4)+'px';
+      drop.style.left=rect.left+'px';
+      drop.style.width=rect.width+'px';
+      const esc=s=>s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      const hl=s=>s.replace(new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<strong>$1</strong>');
+      drop.innerHTML=matches.map(m=>'<div class="ac-item" onclick="selectAC(\''+type+'\',\''+esc(m)+'\')">'+hl(m)+'</div>').join('');
+      drop.classList.add('open');
+    },150);
+  }
   function selectAC(type,val){document.getElementById(type==='cap'?'ob-cap':'ob-hospital').value=val;document.getElementById('ac-'+type).classList.remove('open');}
   document.addEventListener('click',e=>{if(!e.target.closest('.ac-dropdown')&&!e.target.closest('.ob-field'))document.querySelectorAll('.ac-dropdown').forEach(d=>d.classList.remove('open'));});
   document.addEventListener('scroll',()=>document.querySelectorAll('.ac-dropdown.open').forEach(d=>d.classList.remove('open')),true);
