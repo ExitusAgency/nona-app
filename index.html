@@ -923,15 +923,6 @@ body {
 </head>
 <body>
 
-<!-- PANTALLA DE BLOQUEIG -->
-<div id="lockView" class="view" style="flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 24px;text-align:center;background:var(--color-paper);">
-  <div style="font-size:56px;margin-bottom:16px;">🤗</div>
-  <div style="font-size:28px;font-family:var(--font-display);font-weight:700;color:var(--color-navy);margin-bottom:8px;" id="lockName">Hola!</div>
-  <div style="font-size:16px;color:var(--color-muted);margin-bottom:40px;" id="lockSub">Prem per entrar a la Nona</div>
-  <button onclick="unlock()" style="width:100%;max-width:320px;padding:20px;background:var(--color-navy);color:white;border:none;border-radius:var(--r);font-size:20px;font-family:var(--font-display);font-weight:700;cursor:pointer;box-shadow:0 4px 20px oklch(26% 0.072 240 / 0.3);">
-    Entrar →
-  </button>
-</div>
 
 <!-- ONBOARDING -->
 <div id="onboardingView" class="view">
@@ -1119,8 +1110,8 @@ body {
     <div class="config-row"><div><div class="config-label">Resum diari</div><div class="config-sub">Cada vespre a les 20h</div></div><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
     <div class="config-row"><div><div class="config-label">Recordatori medicines</div><div class="config-sub">Avís al telèfon</div></div><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
     <div style="margin-top:32px;padding-top:18px;border-top:1px solid oklch(85% 0.012 80);text-align:center;">
-      <button onclick="logOut()" style="background:none;border:1px solid oklch(80% 0.010 240);border-radius:999px;padding:8px 20px;font-size:12px;color:oklch(55% 0.010 240);cursor:pointer;font-family:var(--font-body);">
-        🔒 Bloquejar app
+      <button onclick="confirmReset()" style="background:none;border:none;color:oklch(65% 0.010 240);font-size:12px;cursor:pointer;font-family:var(--font-body);text-decoration:underline;">
+        Esborrar totes les dades i tornar a configurar
       </button>
     </div>
   </div>
@@ -1435,28 +1426,18 @@ body {
   function init(){
     applyLang();
     if(userData&&userData.onboardingDone){
-      // Usuari registrat: mostra pantalla de bloqueig
-      const alias=userData.alias||userData.nom||'';
-      const lockName=document.getElementById('lockName');
-      const lockSub=document.getElementById('lockSub');
-      if(lockName)lockName.textContent=alias?'Hola, '+alias+'!':'Hola!';
-      if(lockSub)lockSub.textContent='Prem per entrar a la Nona';
-      showView('lockView');
+      applyUserData();
+      showView('elderView');
+      checkReminders();
+      startReminderCycle();
+      setTimeout(()=>{if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{opacity:0,scale:0.82},{opacity:1,scale:1,duration:0.38,ease:'back.out(1.5)',delay:0.25});},80);
     }else{
-      // Primer ús: mostra onboarding (selecció d'idioma)
       showView('onboardingView');
       if(localStorage.getItem('nona_lang')){
         document.getElementById('ob-lang').classList.remove('active');
         document.getElementById('ob0').classList.add('active');
       }
     }
-  }
-  function unlock(){
-    applyUserData();
-    showView('elderView');
-    checkReminders();
-    startReminderCycle();
-    setTimeout(()=>{if(typeof gsap!=='undefined')gsap.fromTo('#langSwitcher',{opacity:0,scale:0.82},{opacity:1,scale:1,duration:0.38,ease:'back.out(1.5)',delay:0.25});},80);
   }
   function updateTime(){const now=new Date();const L=T[currentLang];const el=document.getElementById('headerTime');if(el)el.textContent=L.days[now.getDay()]+' '+now.getDate()+' '+L.months[now.getMonth()]+' · '+now.toLocaleTimeString(currentLang,{hour:'2-digit',minute:'2-digit'});}
   updateTime();setInterval(updateTime,30000);
@@ -1612,14 +1593,6 @@ body {
         })
         .catch(()=>{if(loading)loading.style.display='none';});
     },400);
-  }
-  function logOut(){
-    const alias=userData?.alias||userData?.nom||'';
-    const lockName=document.getElementById('lockName');
-    const lockSub=document.getElementById('lockSub');
-    if(lockName)lockName.textContent=alias?'Hola, '+alias+'!':'Hola!';
-    if(lockSub)lockSub.textContent=t('lock_sub')||'Prem per entrar a la Nona';
-    showView('lockView');
   }
   function confirmReset(){
     if(confirm('Segur? S\'esborraran TOTES les dades (nom, contactes, medicines, adreces...) i hauràs de tornar a configurar-ho tot.')){
