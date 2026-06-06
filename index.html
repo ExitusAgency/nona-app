@@ -1064,7 +1064,7 @@ body {
     </button>
   </div>
   <div style="padding:16px 16px 28px;text-align:center;">
-    <button onclick="openModal('suggestModal')" style="background:none;border:1px solid oklch(85% 0.012 80);border-radius:999px;padding:9px 20px;font-size:12px;color:oklch(55% 0.010 240);cursor:pointer;font-family:var(--font-body);letter-spacing:0.3px;">
+    <button id="suggestBtn" onclick="openModal('suggestModal')" style="background:none;border:1px solid oklch(85% 0.012 80);border-radius:999px;padding:9px 20px;font-size:12px;color:oklch(55% 0.010 240);cursor:pointer;font-family:var(--font-body);letter-spacing:0.3px;">
       💡 Tens alguna idea o suggeriment?
     </button>
   </div>
@@ -1102,10 +1102,10 @@ body {
   <div class="modal">
     <div class="modal-handle"></div>
     <button class="modal-close" onclick="closeModal('suggestModal')">✕</button>
-    <h2>💡 Tens alguna idea?</h2>
-    <p style="font-size:14px;color:oklch(55% 0.010 240);margin-bottom:18px;line-height:1.6;">Explica'ns quina funcionalitat t'agradaria tenir, o alguna cosa que milloraria la teva experiència. Llegim tots els missatges!</p>
+    <h2 id="suggestTitle">💡 Tens alguna idea?</h2>
+    <p id="suggestSub" style="font-size:14px;color:oklch(55% 0.010 240);margin-bottom:18px;line-height:1.6;">Explica'ns quina funcionalitat t'agradaria tenir, o alguna cosa que milloraria la teva experiència. Llegim tots els missatges!</p>
     <textarea id="suggestText" style="width:100%;box-sizing:border-box;min-height:120px;border:1.5px solid oklch(85% 0.012 80);border-radius:10px;padding:12px;font-size:14px;font-family:var(--font-body);resize:vertical;outline:none;color:oklch(20% 0.012 240);" placeholder="Per exemple: m'agradaria poder..."></textarea>
-    <button class="action-btn" style="margin-top:14px;" onclick="sendSuggestion()">Enviar suggeriment</button>
+    <button id="suggestSendBtn" class="action-btn" style="margin-top:14px;" onclick="sendSuggestion()">Enviar suggeriment</button>
     <div id="suggestThanks" style="display:none;text-align:center;padding:14px;color:oklch(48% 0.112 155);font-weight:600;font-size:15px;">✅ Gràcies! El teu missatge s'ha enviat.</div>
   </div>
 </div>
@@ -1139,15 +1139,34 @@ body {
 
 <div id="medicinesModal" class="modal-overlay">
   <div class="modal">
-    <div class="modal-handle"></div><button class="modal-close" onclick="closeModal('medicinesModal')">✕</button>
-    <h2>Les meves medicines</h2>
-    <ul class="med-list">
-      <li class="med-item"><div class="med-icon">🌅</div><div class="med-info"><div class="med-name">Omeprazol 20mg</div><div class="med-dose">1 pastilla · En dejú</div></div><div class="med-time">Matí</div></li>
-      <li class="med-item"><div class="med-icon">🌅</div><div class="med-info"><div class="med-name">Metformina 500mg</div><div class="med-dose">1 pastilla · Esmorzar</div></div><div class="med-time">Matí</div></li>
-      <li class="med-item"><div class="med-icon">🌙</div><div class="med-info"><div class="med-name">Atorvastatina 10mg</div><div class="med-dose">1 pastilla · Sopar</div></div><div class="med-time">Nit</div></li>
-      <li class="med-item"><div class="med-icon">🌙</div><div class="med-info"><div class="med-name">Metformina 500mg</div><div class="med-dose">1 pastilla · Sopar</div></div><div class="med-time">Nit</div></li>
-    </ul>
-    <button class="action-btn primary" onclick="closeModal('medicinesModal');openChat('medicines')">💬 Tinc un dubte</button>
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal('medicinesModal')">✕</button>
+    <h2 id="medModalTitle">Les meves medicines</h2>
+    <div id="medList" style="margin-bottom:12px;"></div>
+    <button onclick="openMedForm()" style="width:100%;padding:11px;border:1.5px dashed oklch(75% 0.012 80);border-radius:10px;background:none;font-size:13px;color:oklch(48% 0.098 195);cursor:pointer;font-family:var(--font-body);font-weight:600;margin-bottom:14px;" id="medAddBtn">+ Afegir medicament</button>
+    <button class="action-btn secondary" style="background:none;border:1px solid oklch(85% 0.012 80);color:oklch(40% 0.012 240);" onclick="closeModal('medicinesModal');openChat('medicines')" id="medDoubtBtn">💬 Tinc un dubte</button>
+  </div>
+</div>
+
+<!-- MODAL FORMULARI MEDICAMENT -->
+<div id="medFormModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal('medFormModal')">✕</button>
+    <h2 id="medFormTitle">Nou medicament</h2>
+    <input type="hidden" id="medFormIdx" value="-1">
+    <div class="ob-field"><label class="ob-label">Nom del medicament</label><input class="ob-input" id="mf-nom" type="text" placeholder="Omeprazol 20mg..."></div>
+    <div class="ob-field"><label class="ob-label">Dosi / Instruccions</label><input class="ob-input" id="mf-dosi" type="text" placeholder="1 pastilla · En dejú..."></div>
+    <div class="ob-field"><label class="ob-label">Moment del dia</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;" id="mf-moment-chips">
+        <div class="ob-chip" onclick="selectMedChip(this,'mati')" data-val="mati">🌅 Matí</div>
+        <div class="ob-chip" onclick="selectMedChip(this,'migdia')" data-val="migdia">☀️ Migdia</div>
+        <div class="ob-chip" onclick="selectMedChip(this,'tarda')" data-val="tarda">🌤️ Tarda</div>
+        <div class="ob-chip" onclick="selectMedChip(this,'nit')" data-val="nit">🌙 Nit</div>
+      </div>
+    </div>
+    <div class="ob-field"><label class="ob-label">Notes (opcional)</label><input class="ob-input" id="mf-notes" type="text" placeholder="Amb menjar, en dejú..."></div>
+    <button class="action-btn" onclick="saveMed()" id="medSaveBtn">Guardar</button>
   </div>
 </div>
 
@@ -1199,7 +1218,7 @@ body {
 <script>
   let currentLang=localStorage.getItem('nona_lang')||'ca';
   const T={
-    ca:{hello:'Hola',family_btn:'Família',greeting:'Benvingut/da',tagline:'Sempre al teu costat',btn_emergency:'Necessito ajuda',btn_emergency_sub:'Avisa la família ara',btn_location:'On sóc?',btn_location_sub:'Ubicació',btn_medicines:'Medicines',btn_medicines_sub:'Horaris avui',btn_transport:'Transport',btn_transport_sub:'Taxi · Bus',btn_chat:'Parla amb mi',btn_chat_sub:'Pregunta',em_title:'Demana ajuda',em_who:'Qui vols avisar?',em_who_sub:'Prem el nom i et trucaran de seguida',sending_title:'Alertant la família...',sending_cancel:'Cancel·lar',loc_title:'On sóc?',loc_searching:'📡 Cercant la teva posició...',loc_getting:'🔍 Obtenint l\'adreça...',loc_share:'📤 Enviar ubicació a la família',loc_shared:'✅ Ubicació enviada!',loc_maps:'🗺️ Obrir Google Maps',loc_denied:'🔒 Has denegat el permís. Activa\'l a Configuració → Ubicació.',loc_error:'⚠️ No s\'ha pogut obtenir la ubicació.',med_title:'Les meves medicines',tr_title:'Transport',tr_hint:'Prem "Buscar" per veure parades properes',chat_title:'Parla amb mi',chat_ph:'Escriu el teu missatge...',chat_send:'Enviar',chat_thinking:'Un moment...',fam_panel:'Panell familiar',fam_back:'← Sortir',fam_data_title:'Dades',fam_modify:'✏️ Modificar',fam_confirm_reset:'Vols tornar a configurar les dades?',f_name:'Nom',f_home:'Casa',f_cap:'CAP/EAP',f_doctor:'Metge/essa',f_hospital:'Hospital',f_blood:'Sang',f_allergy:'Al·lèrgies',f_places:'Llocs',days:['Diumenge','Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte'],months:['gen','feb','mar','abr','mai','jun','jul','ago','set','oct','nov','des'],speech_lang:'ca-ES',prov_opts:['Selecciona...','Barcelona','Girona','Lleida','Tarragona'],
+    ca:{hello:'Hola',family_btn:'Família',btn_suggest:'💡 Tens alguna idea o suggeriment?',suggest_title:'Tens alguna idea?',suggest_sub:'Explica\'ns quina funcionalitat t\'agradaria tenir, o alguna cosa que milloraria la teva experiència. Llegim tots els missatges!',suggest_ph:'Per exemple: m\'agradaria poder...',suggest_send:'Enviar suggeriment',suggest_thanks:'✅ Gràcies! El teu missatge s\'ha enviat.',logout_btn:'Restablir i tancar sessió',greeting:'Benvingut/da',tagline:'Sempre al teu costat',btn_emergency:'Necessito ajuda',btn_emergency_sub:'Avisa la família ara',btn_location:'On sóc?',btn_location_sub:'Ubicació',btn_medicines:'Medicines',btn_medicines_sub:'Horaris avui',btn_transport:'Transport',btn_transport_sub:'Taxi · Bus',btn_chat:'Parla amb mi',btn_chat_sub:'Pregunta',em_title:'Demana ajuda',em_who:'Qui vols avisar?',em_who_sub:'Prem el nom i et trucaran de seguida',sending_title:'Alertant la família...',sending_cancel:'Cancel·lar',loc_title:'On sóc?',loc_searching:'📡 Cercant la teva posició...',loc_getting:'🔍 Obtenint l\'adreça...',loc_share:'📤 Enviar ubicació a la família',loc_shared:'✅ Ubicació enviada!',loc_maps:'🗺️ Obrir Google Maps',loc_denied:'🔒 Has denegat el permís. Activa\'l a Configuració → Ubicació.',loc_error:'⚠️ No s\'ha pogut obtenir la ubicació.',med_title:'Les meves medicines',tr_title:'Transport',tr_hint:'Prem "Buscar" per veure parades properes',chat_title:'Parla amb mi',chat_ph:'Escriu el teu missatge...',chat_send:'Enviar',chat_thinking:'Un moment...',fam_panel:'Panell familiar',fam_back:'← Sortir',fam_data_title:'Dades',fam_modify:'✏️ Modificar',fam_confirm_reset:'Vols tornar a configurar les dades?',f_name:'Nom',f_home:'Casa',f_cap:'CAP/EAP',f_doctor:'Metge/essa',f_hospital:'Hospital',f_blood:'Sang',f_allergy:'Al·lèrgies',f_places:'Llocs',days:['Diumenge','Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte'],months:['gen','feb','mar','abr','mai','jun','jul','ago','set','oct','nov','des'],speech_lang:'ca-ES',prov_opts:['Selecciona...','Barcelona','Girona','Lleida','Tarragona'],
       chat_greeting:(alias)=>`Hola${alias?', '+alias:''}! Sóc la Nona. Estic aquí quan et sents desorientat/da, necessites ajuda per desplaçar-te, o simplement vols parlar. Dis-me, en què et puc ajudar?`,
       chat_r1:'T\'escolto. Explica\'m on estàs o com et sents, i t\'ajudo de seguida.',
       chat_r2:'Entès. Puc buscar-te un taxi, indicar-te la ruta o avisar la teva família. Vols que ho faci?',
@@ -1207,7 +1226,7 @@ body {
       chat_med:(alias)=>`Aquí tens les teves medicines d'avui${alias?', '+alias:''}: 💊\n\n🌅 Matí (en dejú): Omeprazol 20mg\n🌅 Matí (esmorzar): Metformina 500mg\n🌙 Nit (sopar): Atorvastatina 10mg + Metformina 500mg\n\nSi tens dubtes, consulta-ho amb el teu metge o farmacèutic.`,
       voice_error:'El teu navegador no suporta la veu. Prova Chrome.',
       ob_welcome_title:'Hola, soc la Nona!',ob_welcome_sub:'Estic aquí per acompanyar-te. Quan et sentis despistat o necessitis ajuda, aquí m\'tens.',ob_welcome_btn:'Comencem →',ob_name_title:'Com et diuen?',ob_name_sub:'Així et podré saludar cada dia.',ob_name_nom:'Nom',ob_name_cognoms:'Cognoms',ob_name_alias:'Com vols que t\'anomeni?',ob_name_btn:'Continuar →',ob_addr_title:'On és casa teva?',ob_addr_sub:'Si et perds, t\'hi porto en un clic.',ob_addr_btn:'Continuar →',ob_addr_skip:'Ara no, ho faré més tard',ob_health_title:'Informació important',ob_health_sub:'En cas d\'urgència, tenir-ho a mà pot ser clau.',ob_health_cap_ph:'Escriu el nom del CAP...',ob_health_doctor_ph:'Dr. Puig, Dra. Martínez...',ob_health_hospital_ph:'Escriu el nom de l\'hospital...',ob_health_blood_unk:'No ho sé',ob_health_btn:'Continuar →',ob_health_skip:'Ara no',ob_places_title:'Llocs de confiança',ob_places_sub:'Adreces on vas sovint. Si t\'hi perds, hi anirà de seguida.',ob_places_label_ph:'Etiqueta (Fill Joan, Farmàcia...)',ob_places_addr_ph:'Adreça completa...',ob_places_btn:'Continuar →',ob_places_skip:'Saltar aquest pas',ob_done_sub:'La Nona ja et coneix. Sempre al teu costat quan ho necessitis.',ob_done_btn:'Entrar →'},
-    es:{hello:'Hola',family_btn:'Familia',greeting:'Bienvenido/a',tagline:'Siempre a tu lado',btn_emergency:'Necesito ayuda',btn_emergency_sub:'Avisa a la familia',btn_location:'¿Dónde estoy?',btn_location_sub:'Ubicación',btn_medicines:'Medicamentos',btn_medicines_sub:'Horarios hoy',btn_transport:'Transporte',btn_transport_sub:'Taxi · Bus',btn_chat:'Habla conmigo',btn_chat_sub:'Pregunta',em_title:'Pide ayuda',em_who:'¿A quién quieres avisar?',em_who_sub:'Pulsa el nombre y te llamarán',sending_title:'Avisando a la familia...',sending_cancel:'Cancelar',loc_title:'¿Dónde estoy?',loc_searching:'📡 Buscando tu posición...',loc_getting:'🔍 Obteniendo la dirección...',loc_share:'📤 Enviar ubicación a la familia',loc_shared:'✅ ¡Ubicación enviada!',loc_maps:'🗺️ Abrir Google Maps',loc_denied:'🔒 Has denegado el permiso. Actívalo en Ajustes → Ubicación.',loc_error:'⚠️ No se pudo obtener la ubicación.',med_title:'Mis medicamentos',tr_title:'Transporte',tr_hint:'Pulsa "Buscar" para ver paradas cercanas',chat_title:'Habla conmigo',chat_ph:'Escribe tu mensaje...',chat_send:'Enviar',chat_thinking:'Un momento...',fam_panel:'Panel familiar',fam_back:'← Salir',fam_data_title:'Datos',fam_modify:'✏️ Modificar',fam_confirm_reset:'¿Quieres volver a configurar los datos?',f_name:'Nombre',f_home:'Casa',f_cap:'CAP/EAP',f_doctor:'Médico/a',f_hospital:'Hospital',f_blood:'Sangre',f_allergy:'Alergias',f_places:'Lugares',days:['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],months:['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],speech_lang:'es-ES',prov_opts:['Selecciona...','Barcelona','Girona','Lleida','Tarragona'],
+    es:{hello:'Hola',family_btn:'Familia',btn_suggest:'💡 ¿Tienes alguna idea o sugerencia?',suggest_title:'¿Tienes alguna idea?',suggest_sub:'Cuéntanos qué funcionalidad te gustaría tener, o algo que mejoraría tu experiencia. ¡Leemos todos los mensajes!',suggest_ph:'Por ejemplo: me gustaría poder...',suggest_send:'Enviar sugerencia',suggest_thanks:'✅ ¡Gracias! Tu mensaje ha sido enviado.',logout_btn:'Restablecer y cerrar sesión',greeting:'Bienvenido/a',tagline:'Siempre a tu lado',btn_emergency:'Necesito ayuda',btn_emergency_sub:'Avisa a la familia',btn_location:'¿Dónde estoy?',btn_location_sub:'Ubicación',btn_medicines:'Medicamentos',btn_medicines_sub:'Horarios hoy',btn_transport:'Transporte',btn_transport_sub:'Taxi · Bus',btn_chat:'Habla conmigo',btn_chat_sub:'Pregunta',em_title:'Pide ayuda',em_who:'¿A quién quieres avisar?',em_who_sub:'Pulsa el nombre y te llamarán',sending_title:'Avisando a la familia...',sending_cancel:'Cancelar',loc_title:'¿Dónde estoy?',loc_searching:'📡 Buscando tu posición...',loc_getting:'🔍 Obteniendo la dirección...',loc_share:'📤 Enviar ubicación a la familia',loc_shared:'✅ ¡Ubicación enviada!',loc_maps:'🗺️ Abrir Google Maps',loc_denied:'🔒 Has denegado el permiso. Actívalo en Ajustes → Ubicación.',loc_error:'⚠️ No se pudo obtener la ubicación.',med_title:'Mis medicamentos',tr_title:'Transporte',tr_hint:'Pulsa "Buscar" para ver paradas cercanas',chat_title:'Habla conmigo',chat_ph:'Escribe tu mensaje...',chat_send:'Enviar',chat_thinking:'Un momento...',fam_panel:'Panel familiar',fam_back:'← Salir',fam_data_title:'Datos',fam_modify:'✏️ Modificar',fam_confirm_reset:'¿Quieres volver a configurar los datos?',f_name:'Nombre',f_home:'Casa',f_cap:'CAP/EAP',f_doctor:'Médico/a',f_hospital:'Hospital',f_blood:'Sangre',f_allergy:'Alergias',f_places:'Lugares',days:['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],months:['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],speech_lang:'es-ES',prov_opts:['Selecciona...','Barcelona','Girona','Lleida','Tarragona'],
       chat_greeting:(alias)=>`¡Hola${alias?', '+alias:''}! Soy Nona. Estoy aquí cuando te sientes desorientado/a, necesitas ayuda para moverte, o simplemente quieres hablar. Dime, ¿en qué puedo ayudarte?`,
       chat_r1:'Te escucho. Cuéntame dónde estás o cómo te sientes, y te ayudo enseguida.',
       chat_r2:'Entendido. Puedo buscarte un taxi, indicarte la ruta o avisar a tu familia. ¿Quieres que lo haga?',
@@ -1215,7 +1234,7 @@ body {
       chat_med:(alias)=>`Aquí tienes tus medicamentos de hoy${alias?', '+alias:''}: 💊\n\n🌅 Mañana (en ayunas): Omeprazol 20mg\n🌅 Mañana (desayuno): Metformina 500mg\n🌙 Noche (cena): Atorvastatina 10mg + Metformina 500mg\n\nSi tienes dudas, consúltalo con tu médico o farmacéutico.`,
       voice_error:'Tu navegador no soporta la voz. Prueba Chrome.',
       ob_welcome_title:'¡Hola, soy Nona!',ob_welcome_sub:'Estoy aquí para acompañarte. Cuando te sientas despistado o necesites ayuda, aquí me tienes.',ob_welcome_btn:'Empezamos →',ob_name_title:'¿Cómo te llamas?',ob_name_sub:'Así podré saludarte cada día.',ob_name_nom:'Nombre',ob_name_cognoms:'Apellidos',ob_name_alias:'¿Cómo quieres que te llame?',ob_name_btn:'Continuar →',ob_addr_title:'¿Dónde está tu casa?',ob_addr_sub:'Si te pierdes, te llevo allí en un clic.',ob_addr_btn:'Continuar →',ob_addr_skip:'Ahora no, lo haré más tarde',ob_health_title:'Información importante',ob_health_sub:'En caso de urgencia, tenerlo a mano puede ser clave.',ob_health_cap_ph:'Escribe el nombre del CAP...',ob_health_doctor_ph:'Dr. García, Dra. López...',ob_health_hospital_ph:'Escribe el nombre del hospital...',ob_health_blood_unk:'No lo sé',ob_health_btn:'Continuar →',ob_health_skip:'Ahora no',ob_places_title:'Lugares de confianza',ob_places_sub:'Direcciones donde vas a menudo. Si te pierdes, iremos enseguida.',ob_places_label_ph:'Etiqueta (Hijo Joan, Farmacia...)',ob_places_addr_ph:'Dirección completa...',ob_places_btn:'Continuar →',ob_places_skip:'Saltar este paso',ob_done_sub:'Nona ya te conoce. Siempre a tu lado cuando lo necesites.',ob_done_btn:'Entrar →'},
-    en:{hello:'Hello',family_btn:'Family',greeting:'Welcome back',tagline:'Always by your side',btn_emergency:'I need help',btn_emergency_sub:'Alert family now',btn_location:'Where am I?',btn_location_sub:'Location',btn_medicines:'Medicines',btn_medicines_sub:'Today schedule',btn_transport:'Transport',btn_transport_sub:'Taxi · Bus',btn_chat:'Talk to me',btn_chat_sub:'Ask',em_title:'Ask for help',em_who:'Who do you want to alert?',em_who_sub:'Tap a name and they\'ll call you',sending_title:'Alerting your family...',sending_cancel:'Cancel',loc_title:'Where am I?',loc_searching:'📡 Finding your position...',loc_getting:'🔍 Getting address...',loc_share:'📤 Send location to family',loc_shared:'✅ Location sent!',loc_maps:'🗺️ Open Google Maps',loc_denied:'🔒 Location denied. Enable in Settings → Location.',loc_error:'⚠️ Could not get your location.',med_title:'My medicines',tr_title:'Transport',tr_hint:'Tap "Search" to see nearby stops',chat_title:'Talk to me',chat_ph:'Type your message...',chat_send:'Send',chat_thinking:'One moment...',fam_panel:'Family panel',fam_back:'← Back',fam_data_title:'Data',fam_modify:'✏️ Edit',fam_confirm_reset:'Do you want to reconfigure your data?',f_name:'Name',f_home:'Home',f_cap:'Primary care',f_doctor:'GP',f_hospital:'Hospital',f_blood:'Blood',f_allergy:'Allergies',f_places:'Places',days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],speech_lang:'en-GB',prov_opts:['Select...','Barcelona','Girona','Lleida','Tarragona'],
+    en:{hello:'Hello',family_btn:'Family',btn_suggest:'💡 Got an idea or suggestion?',suggest_title:'Got an idea?',suggest_sub:'Tell us what feature you\'d like to have, or something that would improve your experience. We read every message!',suggest_ph:'For example: I\'d love to be able to...',suggest_send:'Send suggestion',suggest_thanks:'✅ Thanks! Your message has been sent.',logout_btn:'Reset and sign out',greeting:'Welcome back',tagline:'Always by your side',btn_emergency:'I need help',btn_emergency_sub:'Alert family now',btn_location:'Where am I?',btn_location_sub:'Location',btn_medicines:'Medicines',btn_medicines_sub:'Today schedule',btn_transport:'Transport',btn_transport_sub:'Taxi · Bus',btn_chat:'Talk to me',btn_chat_sub:'Ask',em_title:'Ask for help',em_who:'Who do you want to alert?',em_who_sub:'Tap a name and they\'ll call you',sending_title:'Alerting your family...',sending_cancel:'Cancel',loc_title:'Where am I?',loc_searching:'📡 Finding your position...',loc_getting:'🔍 Getting address...',loc_share:'📤 Send location to family',loc_shared:'✅ Location sent!',loc_maps:'🗺️ Open Google Maps',loc_denied:'🔒 Location denied. Enable in Settings → Location.',loc_error:'⚠️ Could not get your location.',med_title:'My medicines',tr_title:'Transport',tr_hint:'Tap "Search" to see nearby stops',chat_title:'Talk to me',chat_ph:'Type your message...',chat_send:'Send',chat_thinking:'One moment...',fam_panel:'Family panel',fam_back:'← Back',fam_data_title:'Data',fam_modify:'✏️ Edit',fam_confirm_reset:'Do you want to reconfigure your data?',f_name:'Name',f_home:'Home',f_cap:'Primary care',f_doctor:'GP',f_hospital:'Hospital',f_blood:'Blood',f_allergy:'Allergies',f_places:'Places',days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],speech_lang:'en-GB',prov_opts:['Select...','Barcelona','Girona','Lleida','Tarragona'],
       chat_greeting:(alias)=>`Hi${alias?', '+alias:''}! I'm Nona. I'm here when you feel disoriented, need help getting around, or simply want to talk. Tell me, how can I help you?`,
       chat_r1:'I\'m listening. Tell me where you are or how you feel, and I\'ll help right away.',
       chat_r2:'Got it. I can find you a taxi, give you directions, or alert your family. Would you like me to?',
@@ -1258,6 +1277,11 @@ body {
     ['ca','es','en'].forEach(l=>{const p=document.getElementById('pill-'+l);if(p)p.classList.toggle('active',l===currentLang);});
     const tl=document.getElementById('headerTagline');if(tl)tl.textContent=L.tagline||'';
     const hg=document.getElementById('headerGreeting');if(hg)hg.textContent=L.greeting||'';
+    const sb=document.getElementById('suggestBtn');if(sb)sb.textContent=L.btn_suggest||'';
+    const st=document.getElementById('suggestTitle');if(st)st.textContent='💡 '+(L.suggest_title||'');
+    const ss=document.getElementById('suggestSub');if(ss)ss.textContent=L.suggest_sub||'';
+    const stx=document.getElementById('suggestText');if(stx)stx.placeholder=L.suggest_ph||'';
+    const ssb=document.getElementById('suggestSendBtn');if(ssb)ssb.textContent=L.suggest_send||'';
   }
   let userData=JSON.parse(localStorage.getItem('nona_user')||'null');
   function saveUser(){localStorage.setItem('nona_user',JSON.stringify(userData));}
@@ -1298,15 +1322,70 @@ body {
   function closeModal(id){const overlay=document.getElementById(id);const modal=overlay.querySelector('.modal');if(typeof gsap!=='undefined')gsap.to(modal,{y:'100%',opacity:0,duration:0.22,ease:'power2.in',onComplete:()=>overlay.classList.remove('open')});else overlay.classList.remove('open');}
   document.querySelectorAll('.modal-overlay').forEach(overlay=>{overlay.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);});});
   function openEmergency(){openModal('emergencyModal');}
-  function openMedicines(){openModal('medicinesModal');}
+  function openMedicines(){renderMedList();openModal('medicinesModal');}
   function openLocation(){openModal('locationModal');const addrEl=document.getElementById('locationAddr');const coordsEl=document.getElementById('locationCoords');addrEl.textContent=t('loc_searching');coordsEl.textContent='';if(!navigator.geolocation){addrEl.textContent='⚠️ GPS no disponible.';return;}setTimeout(()=>{navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude;const lng=pos.coords.longitude;coordsEl.textContent=lat.toFixed(5)+', '+lng.toFixed(5);addrEl.textContent=t('loc_getting');fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ca',{headers:{'User-Agent':'Nona/2.1'}}).then(r=>r.json()).then(d=>{const a=d.address||{};const str=[a.road,a.house_number,a.postcode,a.city||a.town||a.village||a.municipality].filter(Boolean).join(', ');addrEl.textContent=str||d.display_name||lat.toFixed(4)+', '+lng.toFixed(4);}).catch(()=>{addrEl.textContent='📍 '+lat.toFixed(4)+', '+lng.toFixed(4);});},(err)=>{addrEl.textContent=err.code===1?t('loc_denied'):t('loc_error');coordsEl.textContent='';},{enableHighAccuracy:true,timeout:15000,maximumAge:30000});},300);}
   function shareLocation(){const btn=document.getElementById('shareLocationBtn');btn.textContent=t('loc_shared');btn.style.background='#2d8653';setTimeout(()=>{btn.textContent=t('loc_share');btn.style.background='';},3000);}
   function openMaps(){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pos=>window.open('https://maps.google.com?q='+pos.coords.latitude+','+pos.coords.longitude,'_blank'));}
   function simulateCall(name){closeModal('emergencyModal');alert('Trucant a '+name+'...');}
   function sendEmergencyAlert(){closeModal('emergencyModal');document.getElementById('sendingOverlay').classList.add('open');setTimeout(()=>document.getElementById('sendingOverlay').classList.remove('open'),4000);}
   function closeSending(){document.getElementById('sendingOverlay').classList.remove('open');}
+  // ── MEDICINES ──
+  const MED_MOMENT_ICON={mati:'🌅',migdia:'☀️',tarda:'🌤️',nit:'🌙'};
+  const MED_MOMENT_LABEL={ca:{mati:'Matí',migdia:'Migdia',tarda:'Tarda',nit:'Nit'},es:{mati:'Mañana',migdia:'Mediodía',tarda:'Tarde',nit:'Noche'},en:{mati:'Morning',migdia:'Midday',tarda:'Afternoon',nit:'Night'}};
+  let selectedMedMoment='';
+  function getMeds(){return JSON.parse(localStorage.getItem('nona_meds')||'[]');}
+  function saveMeds(list){localStorage.setItem('nona_meds',JSON.stringify(list));}
+  function renderMedList(){
+    const meds=getMeds();const el=document.getElementById('medList');
+    if(!meds.length){el.innerHTML='<div style="text-align:center;padding:18px 0;color:oklch(62% 0.010 240);font-size:13px;">Cap medicament afegit encara.</div>';return;}
+    const order=['mati','migdia','tarda','nit'];
+    const grouped={};meds.forEach((m,i)=>{if(!grouped[m.moment])grouped[m.moment]=[];grouped[m.moment].push({...m,idx:i});});
+    el.innerHTML=order.filter(k=>grouped[k]).map(k=>{
+      const label=MED_MOMENT_LABEL[currentLang]?.[k]||k;
+      const icon=MED_MOMENT_ICON[k];
+      return '<div style="margin-bottom:12px;"><div style="font-size:11px;font-weight:700;color:oklch(50% 0.010 240);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">'+icon+' '+label+'</div>'+
+        grouped[k].map(m=>'<div style="display:flex;align-items:center;gap:10px;background:oklch(97% 0.005 87);border-radius:9px;padding:10px 12px;margin-bottom:6px;">'
+          +'<div style="flex:1;"><div style="font-size:14px;font-weight:700;color:oklch(20% 0.012 240);">'+m.nom+'</div>'
+          +(m.dosi?'<div style="font-size:12px;color:oklch(55% 0.010 240);margin-top:2px;">'+m.dosi+'</div>':'')
+          +(m.notes?'<div style="font-size:11px;color:oklch(62% 0.010 240);margin-top:1px;font-style:italic;">'+m.notes+'</div>':'')+'</div>'
+          +'<button onclick="openMedForm('+m.idx+')" style="background:none;border:none;cursor:pointer;font-size:16px;padding:4px;">✏️</button>'
+          +'<button onclick="deleteMed('+m.idx+')" style="background:none;border:none;cursor:pointer;font-size:16px;padding:4px;">🗑️</button>'
+          +'</div>').join('')+'</div>';
+    }).join('');
+  }
+  function openMedForm(idx){
+    const meds=getMeds();
+    document.getElementById('medFormIdx').value=idx===undefined?-1:idx;
+    document.getElementById('medFormTitle').textContent=idx===undefined?'Nou medicament':'Editar medicament';
+    document.getElementById('medSaveBtn').textContent='Guardar';
+    if(idx!==undefined&&meds[idx]){
+      const m=meds[idx];
+      document.getElementById('mf-nom').value=m.nom||'';
+      document.getElementById('mf-dosi').value=m.dosi||'';
+      document.getElementById('mf-notes').value=m.notes||'';
+      selectedMedMoment=m.moment||'';
+    }else{
+      document.getElementById('mf-nom').value='';
+      document.getElementById('mf-dosi').value='';
+      document.getElementById('mf-notes').value='';
+      selectedMedMoment='';
+    }
+    document.querySelectorAll('#mf-moment-chips .ob-chip').forEach(c=>{c.classList.toggle('selected',c.dataset.val===selectedMedMoment);});
+    openModal('medFormModal');
+  }
+  function selectMedChip(el,val){selectedMedMoment=val;document.querySelectorAll('#mf-moment-chips .ob-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+  function saveMed(){
+    const nom=document.getElementById('mf-nom').value.trim();
+    if(!nom)return;
+    const meds=getMeds();
+    const idx=parseInt(document.getElementById('medFormIdx').value);
+    const med={nom,dosi:document.getElementById('mf-dosi').value.trim(),moment:selectedMedMoment||'mati',notes:document.getElementById('mf-notes').value.trim()};
+    if(idx>=0)meds[idx]=med;else meds.push(med);
+    saveMeds(meds);closeModal('medFormModal');renderMedList();
+  }
+  function deleteMed(idx){if(confirm('Eliminar aquest medicament?')){const meds=getMeds();meds.splice(idx,1);saveMeds(meds);renderMedList();}}
   function logOut(){if(confirm('Segur que vols restablir la Nona? S\'esborraran totes les dades del dispositiu.')){localStorage.clear();location.reload();}}
-  function sendSuggestion(){const text=document.getElementById('suggestText').value.trim();if(!text)return;const subject=encodeURIComponent('Suggeriment Nona App');const body=encodeURIComponent('Hola,\n\nTinc un suggeriment per a la Nona:\n\n'+text+'\n\nGràcies!');window.open('mailto:exitus.agency.barcelona@gmail.com?subject='+subject+'&body='+body,'_blank');document.getElementById('suggestText').value='';document.getElementById('suggestThanks').style.display='block';setTimeout(()=>{document.getElementById('suggestThanks').style.display='none';closeModal('suggestModal');},2500);}
+  function sendSuggestion(){const text=document.getElementById('suggestText').value.trim();if(!text)return;const subject=encodeURIComponent('Suggeriment Nona App');const body=encodeURIComponent('Hola,\n\nTinc un suggeriment per a la Nona:\n\n'+text+'\n\nGràcies!');window.open('mailto:exitus.agency.barcelona@gmail.com?subject='+subject+'&body='+body,'_blank');document.getElementById('suggestText').value='';const thanks=document.getElementById('suggestThanks');thanks.textContent=t('suggest_thanks');thanks.style.display='block';setTimeout(()=>{thanks.style.display='none';closeModal('suggestModal');},2500);}
   const KEYWORDS=[{keys:['mareig','marejada','marejat','mareo','dizzy','vertigen'],ca:'🪑 Seu o estira\'t ara. Respira lentament.\n\n💧 Beu un got d\'aigua a poc a poc.\n\nSi no millora en 10 minuts, prem "Necessito ajuda".',es:'🪑 Siéntate o túmbate ahora. Respira despacio.\n\n💧 Bebe un vaso de agua poco a poco.\n\nSi no mejora en 10 minutos, pulsa "Necesito ayuda".',en:'🪑 Sit or lie down now. Breathe slowly.\n\n💧 Drink water slowly.\n\nIf it doesn\'t improve in 10 minutes, press "I need help".'},{keys:['caiguda','caigut','caído','fell','m\'he caigut'],ca:'⚠️ Queda\'t quiet/a i no et moguis fins que sàpigues si t\'has fet mal.\n\nSi tens dolor fort, truca al 112.',es:'⚠️ Quédate quieto/a y no te muevas hasta saber si te has hecho daño.\n\nSi tienes dolor fuerte, llama al 112.',en:'⚠️ Stay still until you know if you\'re hurt.\n\nIf you have strong pain, call 112.'},{keys:['dolor pit','dolor pecho','chest pain','infart'],ca:'🚨 Dolor al pit és una urgència. Truca al 112 ARA o prem "Necessito ajuda".',es:'🚨 El dolor en el pecho es una urgencia. Llama al 112 AHORA o pulsa "Necesito ayuda".',en:'🚨 Chest pain is an emergency. Call 112 NOW or press "I need help".'},{keys:['medicines','medicaments','medicamentos','pastilla','omeprazol'],ca:null,es:null,en:null,special:'medicines'},{keys:['on soc','on estic','perdut','perduda','perdido','lost','no sé on'],ca:'📍 Prem el botó "On sóc?" i veuràs la teva adreça exacta.\n\nTambé pots enviar la ubicació a la família.',es:'📍 Pulsa "¿Dónde estoy?" y verás tu dirección exacta.\n\nTambién puedes enviar tu ubicación a la familia.',en:'📍 Press "Where am I?" to see your exact address.\n\nYou can also send your location to your family.'},{keys:['taxi','transport','bus','metro'],ca:'🚌 Prem "Transport" per demanar un taxi o veure les parades properes.',es:'🚌 Pulsa "Transporte" para pedir un taxi o ver paradas cercanas.',en:'🚌 Press "Transport" to request a taxi or see nearby stops.'},{keys:['gràcies','gracias','thank'],ca:'De res! Aquí estic sempre que em necessitis 😊',es:'¡De nada! Aquí estoy siempre que me necesites 😊',en:'You\'re welcome! I\'m here whenever you need me 😊'}];
   function detectKeyword(text){const lower=text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');for(const kw of KEYWORDS){if(kw.keys.map(k=>k.normalize('NFD').replace(/[̀-ͯ]/g,'')).some(k=>lower.includes(k)))return kw;}return null;}
   function getSmartResponse(text){const match=detectKeyword(text);if(!match){const g={ca:'No he entès del tot. Pots dir-me si estàs desorientat/da, necessites anar a algun lloc, o vols que truqui a algú?',es:'No he entendido del todo. ¿Puedes decirme si estás desorientado/a, necesitas ir a algún sitio, o quieres que llame a alguien?',en:'I didn\'t quite understand. Can you tell me if you\'re disoriented, need to go somewhere, or want me to call someone?'};return g[currentLang]||g.ca;}if(match.special==='medicines')return t('chat_med',userData?.alias||userData?.nom||'');return match[currentLang]||match.ca;}
