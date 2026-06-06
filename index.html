@@ -988,11 +988,19 @@ body {
     <div class="ob-subtitle">Adreces on vas sovint. Si t'hi perds, hi anirà de seguida.</div>
     <div id="ob-addrs-list"></div>
     <div style="margin-bottom:11px;">
-      <div class="ob-add-row">
-        <select class="ob-select" id="ob-addr-icon" style="width:54px;flex-shrink:0;font-size:19px;padding:9px 7px;text-align:center;"><option>👨</option><option>👩</option><option>👶</option><option>🏥</option><option>💊</option><option>🛒</option><option>✂️</option><option>⛪</option><option>🏦</option><option>☕</option></select>
+      <div class="ob-add-row" style="align-items:center;">
+        <select class="ob-select" id="ob-addr-icon" style="width:54px;flex-shrink:0;font-size:19px;padding:9px 7px;text-align:center;"><option>👨</option><option>👩</option><option>👶</option><option>🏥</option><option>💊</option><option>🛒</option><option>✂️</option><option>⛪</option><option>🏦</option><option>☕</option><option>🏫</option><option>🌳</option><option>🏊</option></select>
         <input class="ob-input" id="ob-addr-label" type="text" placeholder="Etiqueta (Fill Joan, Farmàcia...)">
       </div>
-      <div class="ob-add-row"><input class="ob-input" id="ob-addr-addr" type="text" placeholder="Adreça completa..."><button class="ob-add-btn" onclick="addSecondaryAddr()">+</button></div>
+      <div class="ob-add-row"><input class="ob-input" id="ob-addr-addr" type="text" placeholder="Adreça completa (Carrer, número, municipi)..."></div>
+      <div style="display:flex;gap:9px;margin-top:6px;">
+        <input class="ob-input" id="ob-addr-contact" type="text" placeholder="Nom del contacte (opcional)" style="flex:1;">
+        <input class="ob-input" id="ob-addr-tel" type="tel" inputmode="tel" placeholder="Telèfon" style="flex:1;">
+      </div>
+      <div class="ob-add-row" style="margin-top:6px;">
+        <input class="ob-input" id="ob-addr-notes" type="text" placeholder="Notes (horaris, referència...)">
+        <button class="ob-add-btn" onclick="addSecondaryAddr()">+</button>
+      </div>
     </div>
     <button class="ob-btn primary" onclick="obNext(4)">Continuar →</button>
     <button class="ob-btn skip" onclick="obNext(4)">Saltar aquest pas</button>
@@ -1319,9 +1327,9 @@ body {
   document.addEventListener('click',e=>{if(!e.target.closest('.ac-dropdown')&&!e.target.closest('.ob-field'))document.querySelectorAll('.ac-dropdown').forEach(d=>d.classList.remove('open'));});
   document.addEventListener('scroll',()=>document.querySelectorAll('.ac-dropdown.open').forEach(d=>d.classList.remove('open')),true);
   function selectChip(group,el,val){document.querySelectorAll('#ob-chips-'+group+' .ob-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');if(group==='sang')selectedSang=val;}
-  function addSecondaryAddr(){const icon=document.getElementById('ob-addr-icon').value;const label=document.getElementById('ob-addr-label').value.trim();const addr=document.getElementById('ob-addr-addr').value.trim();if(!label||!addr)return;secondaryAddrs.push({icon,label,addr});document.getElementById('ob-addr-label').value='';document.getElementById('ob-addr-addr').value='';renderSecondaryAddrs();}
+  function addSecondaryAddr(){const icon=document.getElementById('ob-addr-icon').value;const label=document.getElementById('ob-addr-label').value.trim();const addr=document.getElementById('ob-addr-addr').value.trim();if(!label||!addr)return;const contact=document.getElementById('ob-addr-contact').value.trim();const tel=document.getElementById('ob-addr-tel').value.trim();const notes=document.getElementById('ob-addr-notes').value.trim();secondaryAddrs.push({icon,label,addr,contact,tel,notes});['ob-addr-label','ob-addr-addr','ob-addr-contact','ob-addr-tel','ob-addr-notes'].forEach(id=>document.getElementById(id).value='');renderSecondaryAddrs();}
   function removeAddr(idx){secondaryAddrs.splice(idx,1);renderSecondaryAddrs();}
-  function renderSecondaryAddrs(){document.getElementById('ob-addrs-list').innerHTML=secondaryAddrs.map((a,i)=>'<div class="addr-item"><div class="addr-item-icon">'+a.icon+'</div><div class="addr-item-info"><div class="addr-item-label">'+a.label+'</div><div class="addr-item-addr">'+a.addr+'</div></div><button class="addr-remove" onclick="removeAddr('+i+')">✕</button></div>').join('');}
+  function renderSecondaryAddrs(){document.getElementById('ob-addrs-list').innerHTML=secondaryAddrs.map((a,i)=>'<div class="addr-item"><div class="addr-item-icon">'+a.icon+'</div><div class="addr-item-info"><div class="addr-item-label">'+a.label+'</div><div class="addr-item-addr">'+a.addr+(a.contact?' · '+a.contact:'')+(a.tel?' · '+a.tel:'')+(a.notes?'<br><span style="font-size:11px;color:oklch(62% 0.010 240);font-style:italic;">'+a.notes+'</span>':'')+'</div></div><button class="addr-remove" onclick="removeAddr('+i+')">✕</button></div>').join('');}
   function obNext(step){
     if(step===1){const nom=document.getElementById('ob-nom').value.trim();const cog=document.getElementById('ob-cognoms').value.trim();if(!nom){document.getElementById('ob-nom').style.borderColor='rgba(255,80,80,0.7)';document.getElementById('ob-nom').focus();return;}if(!cog){document.getElementById('ob-cognoms').style.borderColor='rgba(255,80,80,0.7)';document.getElementById('ob-cognoms').focus();return;}document.getElementById('ob-nom').style.borderColor='';document.getElementById('ob-cognoms').style.borderColor='';userData=userData||{};const alias=document.getElementById('ob-alias').value.trim();userData.nom=nom;userData.cognoms=cog;userData.nomComplet=[nom,cog].filter(Boolean).join(' ');userData.alias=alias||nom;}
     if(step===2){const carrer=document.getElementById('ob-casa-carrer').value.trim();const num=document.getElementById('ob-casa-num').value.trim();const pis=document.getElementById('ob-casa-pis').value.trim();const cp=document.getElementById('ob-casa-cp').value.trim();const muni=document.getElementById('ob-casa-muni').value.trim();const prov=document.getElementById('ob-casa-prov').value.trim();const parts=[carrer,num,pis,cp,muni,prov].filter(Boolean);userData.casaComponents={carrer,num,pis,cp,muni,prov};userData.casa=parts.filter(p=>p!==pis).join(', ');userData.casaDisplay=parts.join(', ');}
