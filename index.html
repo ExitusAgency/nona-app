@@ -889,11 +889,12 @@ body {
 
 /* ── AUTOCOMPLETE ── */
 .ac-dropdown {
-  position: fixed; background: var(--color-surface);
-  border-radius: var(--r-input);
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: var(--color-surface);
+  border-radius: 0 0 var(--r-input) var(--r-input);
   box-shadow: 0 16px 48px oklch(20% 0.012 240 / 0.16);
-  z-index: 9999; max-height: 200px; overflow-y: auto;
-  display: none; border: 1px solid var(--color-rule);
+  z-index: 9999; max-height: 220px; overflow-y: auto;
+  display: none; border: 1px solid var(--color-rule); border-top: none;
 }
 .ac-dropdown.open { display: block; }
 .ac-item {
@@ -1182,6 +1183,18 @@ body {
   </div>
 </div>
 
+<!-- MODAL AJUDA PERMISOS UBICACIÓ -->
+<div id="locationPermModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal('locationPermModal')">✕</button>
+    <h2>📍 Activa la ubicació</h2>
+    <p style="font-size:14px;color:oklch(40% 0.012 240);margin-bottom:16px;line-height:1.6;" id="locPermIntro">Per saber on ets, cal activar el permís d'ubicació.</p>
+    <div id="locPermSteps" style="background:oklch(95.5% 0.012 87);border-radius:10px;padding:14px 16px;margin-bottom:16px;"></div>
+    <button class="action-btn" onclick="closeModal('locationPermModal');openLocation()">🔄 Tornar a intentar-ho</button>
+  </div>
+</div>
+
 <div id="medicinesModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1389,10 +1402,6 @@ body {
       const rest=list.filter(s=>!starts.includes(s)&&norm(s).includes(q));
       const matches=[...starts,...rest].slice(0,8);
       if(!matches.length){drop.classList.remove('open');return;}
-      const rect=input.getBoundingClientRect();
-      drop.style.top=(rect.bottom+4)+'px';
-      drop.style.left=rect.left+'px';
-      drop.style.width=rect.width+'px';
       const esc=s=>s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
       const hl=s=>s.replace(new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<strong>$1</strong>');
       drop.innerHTML=matches.map(m=>'<div class="ac-item" onclick="selectAC(\''+type+'\',\''+esc(m)+'\')">'+hl(m)+'</div>').join('');
@@ -1447,7 +1456,42 @@ body {
   document.querySelectorAll('.modal-overlay').forEach(overlay=>{overlay.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);});});
   function openEmergency(){renderEmergencyModal();openModal('emergencyModal');}
   function openMedicines(){renderMedList();openModal('medicinesModal');}
-  function openLocation(){openModal('locationModal');const addrEl=document.getElementById('locationAddr');const coordsEl=document.getElementById('locationCoords');addrEl.textContent=t('loc_searching');coordsEl.textContent='';if(!navigator.geolocation){addrEl.textContent='⚠️ GPS no disponible.';return;}setTimeout(()=>{navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude;const lng=pos.coords.longitude;coordsEl.textContent=lat.toFixed(5)+', '+lng.toFixed(5);addrEl.textContent=t('loc_getting');fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ca',{headers:{'User-Agent':'Nona/2.1'}}).then(r=>r.json()).then(d=>{const a=d.address||{};const str=[a.road,a.house_number,a.postcode,a.city||a.town||a.village||a.municipality].filter(Boolean).join(', ');addrEl.textContent=str||d.display_name||lat.toFixed(4)+', '+lng.toFixed(4);}).catch(()=>{addrEl.textContent='📍 '+lat.toFixed(4)+', '+lng.toFixed(4);});},(err)=>{addrEl.textContent=err.code===1?t('loc_denied'):t('loc_error');coordsEl.textContent='';},{enableHighAccuracy:true,timeout:15000,maximumAge:30000});},300);}
+  function showLocationPermHelp(){
+    const ua=navigator.userAgent||'';
+    const isIOS=/iPhone|iPad|iPod/.test(ua);
+    const isAndroid=/Android/.test(ua);
+    const lang=currentLang||'ca';
+    const intro={
+      ca:{ios:'El Safari necessita permís per saber on ets. Segueix aquests passos:',android:'El Chrome necessita permís per saber on ets. Segueix aquests passos:',other:'El navegador necessita permís per saber on ets. Segueix aquests passos:'},
+      es:{ios:'Safari necesita permiso para saber dónde estás. Sigue estos pasos:',android:'Chrome necesita permiso para saber dónde estás. Sigue estos pasos:',other:'El navegador necesita permiso para saber dónde estás. Sigue estos pasos:'},
+      en:{ios:'Safari needs location permission to show where you are. Follow these steps:',android:'Chrome needs location permission to show where you are. Follow these steps:',other:'Your browser needs location permission. Follow these steps:'}
+    };
+    const steps={
+      ca:{
+        ios:['1. Obre l\'app <strong>Configuració</strong> del teu iPhone o iPad','2. Baixa fins a <strong>Privadesa i seguretat</strong>','3. Toca <strong>Serveis d\'ubicació</strong>','4. Busca <strong>Safari</strong> i toca-hi','5. Selecciona <strong>Mentre s\'usa l\'app</strong>','6. Torna a Nona i torna-ho a intentar ↓'],
+        android:['1. Obre <strong>Configuració</strong> al teu Android','2. Ves a <strong>Aplicacions → Chrome</strong>','3. Toca <strong>Permisos → Ubicació</strong>','4. Selecciona <strong>Permet</strong>','5. Torna a Nona i torna-ho a intentar ↓'],
+        other:['1. A la barra del navegador, toca la icona del cadenat o la "i"','2. Busca l\'opció <strong>Ubicació</strong>','3. Canvia-la a <strong>Permetre</strong>','4. Recarrega la pàgina i torna-ho a intentar ↓']
+      },
+      es:{
+        ios:['1. Abre la app <strong>Ajustes</strong> en tu iPhone o iPad','2. Baja hasta <strong>Privacidad y seguridad</strong>','3. Toca <strong>Localización</strong>','4. Busca <strong>Safari</strong> y tócalo','5. Selecciona <strong>Al usar la app</strong>','6. Vuelve a Nona y vuelve a intentarlo ↓'],
+        android:['1. Abre <strong>Ajustes</strong> en tu Android','2. Ve a <strong>Aplicaciones → Chrome</strong>','3. Toca <strong>Permisos → Ubicación</strong>','4. Selecciona <strong>Permitir</strong>','5. Vuelve a Nona y vuelve a intentarlo ↓'],
+        other:['1. En la barra del navegador, toca el candado o la "i"','2. Busca la opción <strong>Ubicación</strong>','3. Cámbiala a <strong>Permitir</strong>','4. Recarga la página y vuelve a intentarlo ↓']
+      },
+      en:{
+        ios:['1. Open <strong>Settings</strong> on your iPhone or iPad','2. Scroll down to <strong>Privacy & Security</strong>','3. Tap <strong>Location Services</strong>','4. Find <strong>Safari</strong> and tap it','5. Select <strong>While Using the App</strong>','6. Come back to Nona and try again ↓'],
+        android:['1. Open <strong>Settings</strong> on your Android','2. Go to <strong>Apps → Chrome</strong>','3. Tap <strong>Permissions → Location</strong>','4. Select <strong>Allow</strong>','5. Come back to Nona and try again ↓'],
+        other:['1. In the browser bar, tap the lock icon or the "i"','2. Find the <strong>Location</strong> option','3. Change it to <strong>Allow</strong>','4. Reload the page and try again ↓']
+      }
+    };
+    const platform=isIOS?'ios':isAndroid?'android':'other';
+    const introEl=document.getElementById('locPermIntro');
+    const stepsEl=document.getElementById('locPermSteps');
+    if(introEl)introEl.textContent=intro[lang][platform];
+    if(stepsEl)stepsEl.innerHTML=steps[lang][platform].map(s=>'<p style="margin:0 0 8px;font-size:14px;line-height:1.55;color:oklch(30% 0.012 240);">'+s+'</p>').join('');
+    closeModal('locationModal');
+    setTimeout(()=>openModal('locationPermModal'),250);
+  }
+  function openLocation(){openModal('locationModal');const addrEl=document.getElementById('locationAddr');const coordsEl=document.getElementById('locationCoords');addrEl.textContent=t('loc_searching');coordsEl.textContent='';if(!navigator.geolocation){addrEl.textContent='⚠️ GPS no disponible.';return;}setTimeout(()=>{navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude;const lng=pos.coords.longitude;coordsEl.textContent=lat.toFixed(5)+', '+lng.toFixed(5);addrEl.textContent=t('loc_getting');fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ca',{headers:{'User-Agent':'Nona/2.1'}}).then(r=>r.json()).then(d=>{const a=d.address||{};const str=[a.road,a.house_number,a.postcode,a.city||a.town||a.village||a.municipality].filter(Boolean).join(', ');addrEl.textContent=str||d.display_name||lat.toFixed(4)+', '+lng.toFixed(4);}).catch(()=>{addrEl.textContent='📍 '+lat.toFixed(4)+', '+lng.toFixed(4);});},(err)=>{if(err.code===1){showLocationPermHelp();}else{addrEl.textContent=t('loc_error');coordsEl.textContent='';}},{enableHighAccuracy:true,timeout:15000,maximumAge:30000});},300);}
   function shareLocation(){const btn=document.getElementById('shareLocationBtn');btn.textContent=t('loc_shared');btn.style.background='#2d8653';setTimeout(()=>{btn.textContent=t('loc_share');btn.style.background='';},3000);}
   function openMaps(){if(navigator.geolocation)navigator.geolocation.getCurrentPosition(pos=>window.open('https://maps.google.com?q='+pos.coords.latitude+','+pos.coords.longitude,'_blank'));}
   function simulateCall(name){closeModal('emergencyModal');alert('Trucant a '+name+'...');}
