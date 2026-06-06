@@ -1063,6 +1063,11 @@ body {
       <div class="btn-label">Parla amb mi</div><div class="btn-sub">Pregunta</div>
     </button>
   </div>
+  <div style="padding:16px 16px 28px;text-align:center;">
+    <button onclick="openModal('suggestModal')" style="background:none;border:1px solid oklch(85% 0.012 80);border-radius:999px;padding:9px 20px;font-size:12px;color:oklch(55% 0.010 240);cursor:pointer;font-family:var(--font-body);letter-spacing:0.3px;">
+      💡 Tens alguna idea o suggeriment?
+    </button>
+  </div>
 </div>
 
 <!-- FAMILIAR -->
@@ -1084,6 +1089,19 @@ body {
     <div class="config-row"><div><div class="config-label">Alerta d'emergència</div><div class="config-sub">WhatsApp + trucada</div></div><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
     <div class="config-row"><div><div class="config-label">Resum diari</div><div class="config-sub">Cada vespre a les 20h</div></div><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
     <div class="config-row"><div><div class="config-label">Recordatori medicines</div><div class="config-sub">Avís al telèfon</div></div><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+  </div>
+</div>
+
+<!-- MODAL SUGGERIMENTS -->
+<div id="suggestModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal('suggestModal')">✕</button>
+    <h2>💡 Tens alguna idea?</h2>
+    <p style="font-size:14px;color:oklch(55% 0.010 240);margin-bottom:18px;line-height:1.6;">Explica'ns quina funcionalitat t'agradaria tenir, o alguna cosa que milloraria la teva experiència. Llegim tots els missatges!</p>
+    <textarea id="suggestText" style="width:100%;box-sizing:border-box;min-height:120px;border:1.5px solid oklch(85% 0.012 80);border-radius:10px;padding:12px;font-size:14px;font-family:var(--font-body);resize:vertical;outline:none;color:oklch(20% 0.012 240);" placeholder="Per exemple: m'agradaria poder..."></textarea>
+    <button class="action-btn" style="margin-top:14px;" onclick="sendSuggestion()">Enviar suggeriment</button>
+    <div id="suggestThanks" style="display:none;text-align:center;padding:14px;color:oklch(48% 0.112 155);font-weight:600;font-size:15px;">✅ Gràcies! El teu missatge s'ha enviat.</div>
   </div>
 </div>
 
@@ -1282,6 +1300,7 @@ body {
   function simulateCall(name){closeModal('emergencyModal');alert('Trucant a '+name+'...');}
   function sendEmergencyAlert(){closeModal('emergencyModal');document.getElementById('sendingOverlay').classList.add('open');setTimeout(()=>document.getElementById('sendingOverlay').classList.remove('open'),4000);}
   function closeSending(){document.getElementById('sendingOverlay').classList.remove('open');}
+  function sendSuggestion(){const text=document.getElementById('suggestText').value.trim();if(!text)return;const subject=encodeURIComponent('Suggeriment Nona App');const body=encodeURIComponent('Hola,\n\nTinc un suggeriment per a la Nona:\n\n'+text+'\n\nGràcies!');window.open('mailto:exitus.agency.barcelona@gmail.com?subject='+subject+'&body='+body,'_blank');document.getElementById('suggestText').value='';document.getElementById('suggestThanks').style.display='block';setTimeout(()=>{document.getElementById('suggestThanks').style.display='none';closeModal('suggestModal');},2500);}
   const KEYWORDS=[{keys:['mareig','marejada','marejat','mareo','dizzy','vertigen'],ca:'🪑 Seu o estira\'t ara. Respira lentament.\n\n💧 Beu un got d\'aigua a poc a poc.\n\nSi no millora en 10 minuts, prem "Necessito ajuda".',es:'🪑 Siéntate o túmbate ahora. Respira despacio.\n\n💧 Bebe un vaso de agua poco a poco.\n\nSi no mejora en 10 minutos, pulsa "Necesito ayuda".',en:'🪑 Sit or lie down now. Breathe slowly.\n\n💧 Drink water slowly.\n\nIf it doesn\'t improve in 10 minutes, press "I need help".'},{keys:['caiguda','caigut','caído','fell','m\'he caigut'],ca:'⚠️ Queda\'t quiet/a i no et moguis fins que sàpigues si t\'has fet mal.\n\nSi tens dolor fort, truca al 112.',es:'⚠️ Quédate quieto/a y no te muevas hasta saber si te has hecho daño.\n\nSi tienes dolor fuerte, llama al 112.',en:'⚠️ Stay still until you know if you\'re hurt.\n\nIf you have strong pain, call 112.'},{keys:['dolor pit','dolor pecho','chest pain','infart'],ca:'🚨 Dolor al pit és una urgència. Truca al 112 ARA o prem "Necessito ajuda".',es:'🚨 El dolor en el pecho es una urgencia. Llama al 112 AHORA o pulsa "Necesito ayuda".',en:'🚨 Chest pain is an emergency. Call 112 NOW or press "I need help".'},{keys:['medicines','medicaments','medicamentos','pastilla','omeprazol'],ca:null,es:null,en:null,special:'medicines'},{keys:['on soc','on estic','perdut','perduda','perdido','lost','no sé on'],ca:'📍 Prem el botó "On sóc?" i veuràs la teva adreça exacta.\n\nTambé pots enviar la ubicació a la família.',es:'📍 Pulsa "¿Dónde estoy?" y verás tu dirección exacta.\n\nTambién puedes enviar tu ubicación a la familia.',en:'📍 Press "Where am I?" to see your exact address.\n\nYou can also send your location to your family.'},{keys:['taxi','transport','bus','metro'],ca:'🚌 Prem "Transport" per demanar un taxi o veure les parades properes.',es:'🚌 Pulsa "Transporte" para pedir un taxi o ver paradas cercanas.',en:'🚌 Press "Transport" to request a taxi or see nearby stops.'},{keys:['gràcies','gracias','thank'],ca:'De res! Aquí estic sempre que em necessitis 😊',es:'¡De nada! Aquí estoy siempre que me necesites 😊',en:'You\'re welcome! I\'m here whenever you need me 😊'}];
   function detectKeyword(text){const lower=text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');for(const kw of KEYWORDS){if(kw.keys.map(k=>k.normalize('NFD').replace(/[̀-ͯ]/g,'')).some(k=>lower.includes(k)))return kw;}return null;}
   function getSmartResponse(text){const match=detectKeyword(text);if(!match){const g={ca:'No he entès del tot. Pots dir-me si estàs desorientat/da, necessites anar a algun lloc, o vols que truqui a algú?',es:'No he entendido del todo. ¿Puedes decirme si estás desorientado/a, necesitas ir a algún sitio, o quieres que llame a alguien?',en:'I didn\'t quite understand. Can you tell me if you\'re disoriented, need to go somewhere, or want me to call someone?'};return g[currentLang]||g.ca;}if(match.special==='medicines')return t('chat_med',userData?.alias||userData?.nom||'');return match[currentLang]||match.ca;}
