@@ -832,6 +832,11 @@ body {
   font-size: var(--text-sm); font-weight: 500;
   margin-top: var(--space-sm); text-decoration: underline; box-shadow: none;
 }
+.ob-back-btn {
+  background: none; border: none; color: oklch(55% 0.010 240);
+  font-size: 13px; font-family: var(--font-body); cursor: pointer;
+  padding: 4px 0 10px; align-self: flex-start; font-weight: 500;
+}
 .lang-btn {
   width: 100%; padding: var(--space-sm) var(--space-md);
   min-height: 56px;
@@ -918,6 +923,21 @@ body {
 </head>
 <body>
 
+<!-- PANTALLA DE BLOQUEIG -->
+<div id="lockView" class="view" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 24px;text-align:center;background:var(--color-paper);">
+  <div style="font-size:56px;margin-bottom:16px;">🤗</div>
+  <div style="font-size:28px;font-family:var(--font-display);font-weight:700;color:var(--color-navy);margin-bottom:8px;" id="lockName">Hola!</div>
+  <div style="font-size:16px;color:var(--color-muted);margin-bottom:40px;" id="lockSub">Prem per entrar a la Nona</div>
+  <button onclick="unlock()" style="width:100%;max-width:320px;padding:20px;background:var(--color-navy);color:white;border:none;border-radius:var(--r);font-size:20px;font-family:var(--font-display);font-weight:700;cursor:pointer;box-shadow:0 4px 20px oklch(26% 0.072 240 / 0.3);">
+    Entrar →
+  </button>
+  <div style="margin-top:48px;padding-top:24px;border-top:1px solid oklch(85% 0.012 80);width:100%;max-width:320px;">
+    <button onclick="confirmReset()" style="background:none;border:none;color:oklch(65% 0.010 240);font-size:12px;cursor:pointer;font-family:var(--font-body);text-decoration:underline;">
+      Esborrar totes les dades i tornar a configurar
+    </button>
+  </div>
+</div>
+
 <!-- ONBOARDING -->
 <div id="onboardingView" class="view">
   <div class="ob-screen active" id="ob-lang" style="align-items:center;justify-content:center;text-align:center;">
@@ -940,6 +960,7 @@ body {
   </div>
   <div class="ob-screen" id="ob1">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+    <button class="ob-back-btn" onclick="obBack(1)">← Enrere</button>
     <div class="ob-icon">🙋</div><div class="ob-title">Com et diuen?</div><div class="ob-subtitle">Així et podré saludar cada dia.</div>
     <div class="ob-field"><label class="ob-label">Nom</label><input class="ob-input" id="ob-nom" type="text" placeholder="Maria, Joan, Rosa..."></div>
     <div class="ob-field"><label class="ob-label">Cognoms</label><input class="ob-input" id="ob-cognoms" type="text" placeholder="García López..."></div>
@@ -951,6 +972,7 @@ body {
   </div>
   <div class="ob-screen" id="ob2">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+    <button class="ob-back-btn" onclick="obBack(2)">← Enrere</button>
     <div class="ob-icon">🏠</div><div class="ob-title">On és casa teva?</div><div class="ob-subtitle">Si et perds, t'hi porto en un clic.</div>
     <div class="ob-field"><label class="ob-label">Tipus de via i nom</label><input class="ob-input" id="ob-casa-carrer" type="text" placeholder="Carrer Gran Via, Av. Diagonal..."></div>
     <div style="display:flex;gap:9px;">
@@ -969,6 +991,7 @@ body {
   </div>
   <div class="ob-screen" id="ob3">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+    <button class="ob-back-btn" onclick="obBack(3)">← Enrere</button>
     <div class="ob-icon">🏥</div><div class="ob-title">Informació important</div><div class="ob-subtitle">En cas d'urgència, tenir-ho a mà pot ser clau.</div>
     <div class="ob-field" style="position:relative;"><label class="ob-label">CAP / EAP</label><input class="ob-input" id="ob-cap" type="text" placeholder="Escriu el nom del CAP..." oninput="autocomplete('cap',this.value)" autocomplete="off"><div id="ac-cap" class="ac-dropdown"></div></div>
     <div class="ob-field"><label class="ob-label">Metge/essa de capçalera</label><input class="ob-input" id="ob-metge" type="text" placeholder="Dr. Puig, Dra. Martínez..."></div>
@@ -984,6 +1007,7 @@ body {
   </div>
   <div class="ob-screen" id="ob4">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div></div>
+    <button class="ob-back-btn" onclick="obBack(4)">← Enrere</button>
     <div class="ob-icon">📍</div><div class="ob-title">Llocs de confiança</div>
     <div class="ob-subtitle">Adreces on vas sovint. Si t'hi perds, hi anirà de seguida.</div>
     <div id="ob-addrs-list"></div>
@@ -1008,6 +1032,7 @@ body {
   <div class="ob-screen" id="ob5">
     <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div></div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+      <button class="ob-back-btn" onclick="obBack(5)" style="align-self:flex-start;">← Enrere</button>
       <div class="ob-icon">🎉</div>
       <div class="ob-title" id="ob-final-title">Ja estàs a punt!</div>
       <div class="ob-subtitle">La Nona ja et coneix. Sempre al teu costat quan ho necessitis.</div>
@@ -1099,7 +1124,7 @@ body {
     <div class="config-row"><div><div class="config-label">Recordatori medicines</div><div class="config-sub">Avís al telèfon</div></div><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
     <div style="margin-top:32px;padding-top:18px;border-top:1px solid oklch(85% 0.012 80);text-align:center;">
       <button onclick="logOut()" style="background:none;border:1px solid oklch(80% 0.010 240);border-radius:999px;padding:8px 20px;font-size:12px;color:oklch(55% 0.010 240);cursor:pointer;font-family:var(--font-body);">
-        Restablir i tancar sessió
+        🔒 Bloquejar app
       </button>
     </div>
   </div>
@@ -1470,7 +1495,29 @@ body {
     saveMeds(meds);closeModal('medFormModal');renderMedList();
   }
   function deleteMed(idx){if(confirm('Eliminar aquest medicament?')){const meds=getMeds();meds.splice(idx,1);saveMeds(meds);renderMedList();}}
-  function logOut(){if(confirm('Segur que vols restablir la Nona? S\'esborraran totes les dades del dispositiu.')){localStorage.clear();location.reload();}}
+  function logOut(){
+    const alias=userData?.alias||userData?.nom||'';
+    const lockName=document.getElementById('lockName');
+    const lockSub=document.getElementById('lockSub');
+    if(lockName)lockName.textContent=alias?'Hola, '+alias+'!':'Hola!';
+    if(lockSub)lockSub.textContent=t('lock_sub')||'Prem per entrar a la Nona';
+    showView('lockView');
+  }
+  function unlock(){
+    showView('elderView');
+  }
+  function confirmReset(){
+    if(confirm('Segur? S\'esborraran TOTES les dades (nom, contactes, medicines, adreces...) i hauràs de tornar a configurar-ho tot.')){
+      if(confirm('Última confirmació: vols esborrar totes les dades?')){
+        localStorage.clear();location.reload();
+      }
+    }
+  }
+  function obBack(step){
+    const screens=['ob-lang','ob0','ob1','ob2','ob3','ob4','ob5'];
+    document.querySelectorAll('.ob-screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(screens[step-1]).classList.add('active');
+  }
   function sendSuggestion(){const text=document.getElementById('suggestText').value.trim();if(!text)return;const subject=encodeURIComponent('Suggeriment Nona App');const body=encodeURIComponent('Hola,\n\nTinc un suggeriment per a la Nona:\n\n'+text+'\n\nGràcies!');window.open('mailto:exitus.agency.barcelona@gmail.com?subject='+subject+'&body='+body,'_blank');document.getElementById('suggestText').value='';const thanks=document.getElementById('suggestThanks');thanks.textContent=t('suggest_thanks');thanks.style.display='block';setTimeout(()=>{thanks.style.display='none';closeModal('suggestModal');},2500);}
   const KEYWORDS=[{keys:['mareig','marejada','marejat','mareo','dizzy','vertigen'],ca:'🪑 Seu o estira\'t ara. Respira lentament.\n\n💧 Beu un got d\'aigua a poc a poc.\n\nSi no millora en 10 minuts, prem "Necessito ajuda".',es:'🪑 Siéntate o túmbate ahora. Respira despacio.\n\n💧 Bebe un vaso de agua poco a poco.\n\nSi no mejora en 10 minutos, pulsa "Necesito ayuda".',en:'🪑 Sit or lie down now. Breathe slowly.\n\n💧 Drink water slowly.\n\nIf it doesn\'t improve in 10 minutes, press "I need help".'},{keys:['caiguda','caigut','caído','fell','m\'he caigut'],ca:'⚠️ Queda\'t quiet/a i no et moguis fins que sàpigues si t\'has fet mal.\n\nSi tens dolor fort, truca al 112.',es:'⚠️ Quédate quieto/a y no te muevas hasta saber si te has hecho daño.\n\nSi tienes dolor fuerte, llama al 112.',en:'⚠️ Stay still until you know if you\'re hurt.\n\nIf you have strong pain, call 112.'},{keys:['dolor pit','dolor pecho','chest pain','infart'],ca:'🚨 Dolor al pit és una urgència. Truca al 112 ARA o prem "Necessito ajuda".',es:'🚨 El dolor en el pecho es una urgencia. Llama al 112 AHORA o pulsa "Necesito ayuda".',en:'🚨 Chest pain is an emergency. Call 112 NOW or press "I need help".'},{keys:['medicines','medicaments','medicamentos','pastilla','omeprazol'],ca:null,es:null,en:null,special:'medicines'},{keys:['on soc','on estic','perdut','perduda','perdido','lost','no sé on'],ca:'📍 Prem el botó "On sóc?" i veuràs la teva adreça exacta.\n\nTambé pots enviar la ubicació a la família.',es:'📍 Pulsa "¿Dónde estoy?" y verás tu dirección exacta.\n\nTambién puedes enviar tu ubicación a la familia.',en:'📍 Press "Where am I?" to see your exact address.\n\nYou can also send your location to your family.'},{keys:['taxi','transport','bus','metro'],ca:'🚌 Prem "Transport" per demanar un taxi o veure les parades properes.',es:'🚌 Pulsa "Transporte" para pedir un taxi o ver paradas cercanas.',en:'🚌 Press "Transport" to request a taxi or see nearby stops.'},{keys:['gràcies','gracias','thank'],ca:'De res! Aquí estic sempre que em necessitis 😊',es:'¡De nada! Aquí estoy siempre que me necesites 😊',en:'You\'re welcome! I\'m here whenever you need me 😊'}];
   function detectKeyword(text){const lower=text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');for(const kw of KEYWORDS){if(kw.keys.map(k=>k.normalize('NFD').replace(/[̀-ͯ]/g,'')).some(k=>lower.includes(k)))return kw;}return null;}
