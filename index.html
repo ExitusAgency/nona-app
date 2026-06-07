@@ -1106,6 +1106,20 @@ body {
     <div class="section-title">Contactes d'emergència</div>
     <div id="emergencyContactList"></div>
     <button onclick="openContactForm()" style="width:100%;padding:10px;border:1.5px dashed oklch(75% 0.012 80);border-radius:10px;background:none;font-size:13px;color:oklch(48% 0.098 195);cursor:pointer;font-family:var(--font-body);font-weight:600;margin-bottom:4px;">+ Afegir contacte</button>
+    <div class="section-title">Transport</div>
+    <div style="background:oklch(95.5% 0.012 87);border-radius:10px;padding:14px;margin-bottom:4px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:oklch(26% 0.072 240);">Telèfon de taxi habitual</div>
+      <input id="cfg-taxi-tel" type="tel" placeholder="Ex: 933 033 033" style="width:100%;padding:10px 12px;border:1.5px solid oklch(80% 0.012 240);border-radius:8px;font-size:15px;font-family:var(--font-body);box-sizing:border-box;margin-bottom:10px;" oninput="saveTransportConfig()">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:oklch(26% 0.072 240);">Comptes d'apps de transport</div>
+      <div class="config-row" style="background:white;border-radius:8px;padding:10px 12px;margin-bottom:6px;">
+        <div><div class="config-label">Tinc compte a Uber</div><div class="config-sub">App instal·lada i configurada</div></div>
+        <div class="toggle" id="toggle-uber" onclick="toggleTransportApp('uber')"></div>
+      </div>
+      <div class="config-row" style="background:white;border-radius:8px;padding:10px 12px;">
+        <div><div class="config-label">Tinc compte a Cabify</div><div class="config-sub">App instal·lada i configurada</div></div>
+        <div class="toggle" id="toggle-cabify" onclick="toggleTransportApp('cabify')"></div>
+      </div>
+    </div>
     <div class="section-title">Notificacions</div>
     <div class="config-row"><div><div class="config-label">Alerta d'emergència</div><div class="config-sub">WhatsApp + trucada</div></div><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
     <div class="config-row"><div><div class="config-label">Resum diari</div><div class="config-sub">Cada vespre a les 20h</div></div><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
@@ -1246,20 +1260,35 @@ body {
 <div id="transportModal" class="modal-overlay">
   <div class="modal">
     <div class="modal-handle"></div><button class="modal-close" onclick="closeModal('transportModal')">✕</button>
-    <h2>Transport</h2>
+    <h2 id="tr-modal-title">Transport</h2>
+
     <div style="margin-bottom:18px;">
-      <div class="section-label">Taxi</div>
-      <button class="action-btn primary" style="margin-bottom:9px;" onclick="callTaxi('uber')">🚗 Demanar Uber</button>
-      <button class="action-btn secondary" style="background:#f9c400;color:#000;border:none;" onclick="callTaxi('cabify')">🚖 Demanar Cabify</button>
-      <button class="action-btn secondary" onclick="window.location.href='tel:933033033'">📞 Trucar taxi (933 033 033)</button>
+      <div class="section-label">📞 Taxi per telèfon</div>
+      <button class="action-btn primary" id="tr-taxi-btn" onclick="callTaxiPhone()" style="font-size:18px;padding:16px;letter-spacing:0.5px;">📞 Trucar taxi</button>
+      <div id="tr-taxi-hint" style="font-size:11px;color:oklch(55% 0.010 240);text-align:center;margin-top:5px;">Configura el teu taxi habitual a Espai personal</div>
     </div>
+
+    <div id="tr-apps-section" style="margin-bottom:18px;">
+      <div class="section-label">🚗 Apps de transport</div>
+      <div id="tr-uber-row" style="display:none;margin-bottom:9px;">
+        <button class="action-btn secondary" onclick="openTransportApp('uber')" style="background:#000;color:#fff;border:none;">🚗 Demanar Uber</button>
+      </div>
+      <div id="tr-cabify-row" style="display:none;margin-bottom:9px;">
+        <button class="action-btn secondary" onclick="openTransportApp('cabify')" style="background:#7c3aed;color:#fff;border:none;">🚖 Demanar Cabify</button>
+      </div>
+      <div id="tr-no-apps" style="font-size:12px;color:oklch(55% 0.010 240);background:oklch(95.5% 0.012 87);border-radius:8px;padding:10px 12px;">
+        💡 Si tens Uber o Cabify, activa-ho a <strong>Espai personal → Transport</strong>
+      </div>
+    </div>
+
     <div style="margin-bottom:18px;">
-      <div class="section-label">Transport públic</div>
+      <div class="section-label">🚌 Transport públic</div>
       <div id="transitResults" style="background:var(--bg);border-radius:var(--rsm);padding:13px;margin-bottom:9px;text-align:center;color:var(--soft);font-size:13px;border:1px solid var(--border);">Prem "Buscar" per veure parades properes</div>
       <button class="action-btn secondary" onclick="findTransit()">🔍 Buscar parades ara</button>
     </div>
+
     <div>
-      <div class="section-label">Destins ràpids</div>
+      <div class="section-label">📍 Destins ràpids</div>
       <button class="action-btn primary" style="margin-bottom:9px;" onclick="navigateTo('home')">🏠 Portar-me a casa</button>
       <button class="action-btn secondary" style="background:var(--green);color:white;border:none;" onclick="navigateTo('hospital')">🏥 Hospital més proper</button>
     </div>
@@ -1453,7 +1482,7 @@ body {
   }
   function updateTime(){const now=new Date();const L=T[currentLang];const el=document.getElementById('headerTime');if(el)el.textContent=L.days[now.getDay()]+' '+now.getDate()+' '+L.months[now.getMonth()]+' · '+now.toLocaleTimeString(currentLang,{hour:'2-digit',minute:'2-digit'});}
   updateTime();setInterval(updateTime,30000);
-  function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);if(id==='elderView'&&typeof gsap!=='undefined'){gsap.fromTo('#elderView .big-btn',{y:20,opacity:0,scale:0.97},{y:0,opacity:1,scale:1,duration:0.38,ease:'power3.out',stagger:0.05,delay:0.03});gsap.fromTo('.header-inner',{y:-6,opacity:0},{y:0,opacity:1,duration:0.28,ease:'power2.out'});}if(id==='familyView'){renderContactList();if(typeof gsap!=='undefined')gsap.fromTo('#familyView .med-edit-item,#familyView .config-row',{y:14,opacity:0},{y:0,opacity:1,duration:0.28,ease:'power2.out',stagger:0.04,delay:0.04});}}
+  function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);if(id==='elderView'&&typeof gsap!=='undefined'){gsap.fromTo('#elderView .big-btn',{y:20,opacity:0,scale:0.97},{y:0,opacity:1,scale:1,duration:0.38,ease:'power3.out',stagger:0.05,delay:0.03});gsap.fromTo('.header-inner',{y:-6,opacity:0},{y:0,opacity:1,duration:0.28,ease:'power2.out'});}if(id==='familyView'){renderContactList();loadTransportConfig();if(typeof gsap!=='undefined')gsap.fromTo('#familyView .med-edit-item,#familyView .config-row',{y:14,opacity:0},{y:0,opacity:1,duration:0.28,ease:'power2.out',stagger:0.04,delay:0.04});}}
   function openModal(id){const overlay=document.getElementById(id);overlay.classList.add('open');const modal=overlay.querySelector('.modal');if(typeof gsap!=='undefined')gsap.fromTo(modal,{y:'100%',opacity:0},{y:'0%',opacity:1,duration:0.32,ease:'power3.out'});else{modal.style.transform='translateY(0)';modal.style.opacity='1';}}
   function closeModal(id){const overlay=document.getElementById(id);const modal=overlay.querySelector('.modal');if(typeof gsap!=='undefined')gsap.to(modal,{y:'100%',opacity:0,duration:0.22,ease:'power2.in',onComplete:()=>overlay.classList.remove('open')});else overlay.classList.remove('open');}
   document.querySelectorAll('.modal-overlay').forEach(overlay=>{overlay.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);});});
@@ -1660,8 +1689,66 @@ body {
   function openChat(context){openModal('chatModal');if(context==='medicines')setTimeout(()=>addMessage(t('chat_med',userData?.alias||userData?.nom||''),'ai'),500);setTimeout(()=>document.getElementById('chatInput').focus(),300);}
   function addMessage(text,role){const msgs=document.getElementById('chatMessages');const div=document.createElement('div');div.className='msg '+role;div.style.whiteSpace='pre-line';div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;}
   function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;addMessage(text,'user');input.value='';const loading=addMessage(t('chat_thinking'),'ai loading');setTimeout(()=>{loading.remove();addMessage(getSmartResponse(text),'ai');},600);}
-  function openTransport(){openModal('transportModal');document.getElementById('transitResults').innerHTML='<span style="color:var(--soft);">'+t('tr_hint')+'</span>';}
-  function callTaxi(s){if(s==='uber')navigator.geolocation.getCurrentPosition(()=>window.open('https://m.uber.com/ul/?action=setPickup&pickup=my_location','_blank'),()=>window.open('https://m.uber.com','_blank'));else window.open('https://cabify.com/app','_blank');}
+  const PROV_TAXI={
+    '08':'933 033 033', // Barcelona
+    '17':'972 222 323', // Girona
+    '25':'973 200 500', // Lleida
+    '43':'977 231 214', // Tarragona
+    'default':'933 033 033'
+  };
+  function getDefaultTaxiTel(){
+    const prov=userData?.cp?userData.cp.substring(0,2):'';
+    return PROV_TAXI[prov]||PROV_TAXI['default'];
+  }
+  function openTransport(){
+    openModal('transportModal');
+    document.getElementById('transitResults').innerHTML='<span style="color:var(--soft);">'+t('tr_hint')+'</span>';
+    // Taxi button
+    const tel=userData?.taxiTel||getDefaultTaxiTel();
+    const taxiBtn=document.getElementById('tr-taxi-btn');
+    if(taxiBtn)taxiBtn.textContent='📞 Trucar taxi  '+tel;
+    const hint=document.getElementById('tr-taxi-hint');
+    if(hint)hint.style.display=userData?.taxiTel?'none':'block';
+    // Apps
+    const hasUber=userData?.hasUber||false;
+    const hasCabify=userData?.hasCabify||false;
+    const uberRow=document.getElementById('tr-uber-row');
+    const cabifyRow=document.getElementById('tr-cabify-row');
+    const noApps=document.getElementById('tr-no-apps');
+    if(uberRow)uberRow.style.display=hasUber?'block':'none';
+    if(cabifyRow)cabifyRow.style.display=hasCabify?'block':'none';
+    if(noApps)noApps.style.display=(!hasUber&&!hasCabify)?'block':'none';
+  }
+  function callTaxiPhone(){
+    const tel=(userData?.taxiTel||getDefaultTaxiTel()).replace(/\s/g,'');
+    window.location.href='tel:'+tel;
+  }
+  function openTransportApp(app){
+    if(app==='uber')navigator.geolocation.getCurrentPosition(
+      ()=>window.open('https://m.uber.com/ul/?action=setPickup&pickup=my_location','_blank'),
+      ()=>window.open('https://m.uber.com','_blank'));
+    else window.open('https://cabify.com/app','_blank');
+  }
+  function saveTransportConfig(){
+    if(!userData)return;
+    const tel=document.getElementById('cfg-taxi-tel');
+    if(tel)userData.taxiTel=tel.value.trim();
+    saveUser();
+  }
+  function toggleTransportApp(app){
+    if(!userData)return;
+    if(app==='uber'){userData.hasUber=!userData.hasUber;document.getElementById('toggle-uber').classList.toggle('off',!userData.hasUber);}
+    else{userData.hasCabify=!userData.hasCabify;document.getElementById('toggle-cabify').classList.toggle('off',!userData.hasCabify);}
+    saveUser();
+  }
+  function loadTransportConfig(){
+    const tel=document.getElementById('cfg-taxi-tel');
+    if(tel&&userData?.taxiTel)tel.value=userData.taxiTel;
+    const tu=document.getElementById('toggle-uber');
+    const tc=document.getElementById('toggle-cabify');
+    if(tu)tu.classList.toggle('off',!userData?.hasUber);
+    if(tc)tc.classList.toggle('off',!userData?.hasCabify);
+  }
   function findTransit(){const box=document.getElementById('transitResults');box.innerHTML='<span style="color:var(--soft);">📡 Buscant...</span>';if(!navigator.geolocation){box.innerHTML='<span style="color:var(--emergency);">GPS no disponible.</span>';return;}navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude;const lng=pos.coords.longitude;box.innerHTML='<div style="text-align:left;"><div class="transit-item"><div class="transit-icon">🚌</div><div class="transit-info"><div class="transit-name">Parada de bus</div><div class="transit-dist">~80 metres</div></div><div class="transit-num">Bus</div></div><div class="transit-item"><div class="transit-icon">🚇</div><div class="transit-info"><div class="transit-name">Estació de metro</div><div class="transit-dist">~350 metres</div></div><div class="transit-num">Metro</div></div><div style="margin-top:11px;"><button class="action-btn primary" style="margin:0;" onclick="window.open(\'https://www.google.com/maps/search/parada+bus+metro/@'+lat+','+lng+',16z\',\'_blank\')">🗺️ Veure al mapa</button></div></div>';},()=>{box.innerHTML='<span style="color:var(--emergency);">No s\'ha pogut obtenir la ubicació.</span>';});}
   function navigateTo(dest){if(dest==='home'){const homeAddr=encodeURIComponent(userData?.casa||'Barcelona');window.open('https://www.google.com/maps/dir/?api=1&destination='+homeAddr+'&travelmode=transit','_blank');}else{navigator.geolocation.getCurrentPosition(pos=>window.open('https://www.google.com/maps/search/hospital/@'+pos.coords.latitude+','+pos.coords.longitude+',14z','_blank'),()=>window.open('https://www.google.com/maps/search/hospital+barcelona','_blank'));}}
   let recognition=null,isRecording=false;
